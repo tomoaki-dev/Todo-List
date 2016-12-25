@@ -1,5 +1,6 @@
 package jp.ac.u_tokyo.t.todo_list_utdroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,6 +25,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String LIST_ITEM_TEXT2 = "Text";
 
     private List<Task> taskList;
+
+    private final int ADD_TASK = 0;
+    private final int EDIT_TASK = 1;
+
+    /* Intentにオブジェクトを添付する際もKey-Valueストアの考え方に従う */
+    public final static String INTENT_KEY_RESULT = "intentKeyResult";
+    public final static String INTENT_KEY_FILEPATH = "intentKeyFilePath";
 
 
     @Override
@@ -62,5 +70,16 @@ public class MainActivity extends AppCompatActivity {
             Task tmp = new Task("Task " + i, 2017, d, d, d ,d, false);
             taskList.add(tmp);
         }
+        //Intentでサブ画面（編集画面）を開く
+        findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SubActivity.class);
+                startActivity(intent);
+            }
+
+        });
     }
+
+
 }
