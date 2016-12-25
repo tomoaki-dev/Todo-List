@@ -1,21 +1,17 @@
 package jp.ac.u_tokyo.t.todo_list_utdroid;
 
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.checkbox;
 
@@ -47,12 +43,13 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
         if (item != null) {
             /* Viewの取得 */
             TextView taskName = (TextView) view.findViewById(R.id.taskName);
-            TextView taskText = (TextView) view.findViewById(R.id.taskText);
+            TextView deadlineTime = (TextView) view.findViewById(R.id.deadlineTime);
+            TextView remainDay = (TextView) view.findViewById(R.id.remainDay);
 
             /* 名前とメッセージを表示 、ここはまだ作ってないTask.javaで扱う*/
-            taskName.setText(item.task);
-            taskText.setText(item.text);
-
+            taskName.setText(item.getName());
+            deadlineTime.setText(DateFormat.format("yyyy/MM/dd, E, kk:mm", item.getDeadlineTime()));
+            remainDay.setText("あと" + item.remainDay() + "日");
 
             CheckBox cbx = (CheckBox) view.findViewById(mCheckBox);
             cbx.setTag(position);

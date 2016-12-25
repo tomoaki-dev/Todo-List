@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LIST_ITEM_TEXT1 = "Task";
     private static final String LIST_ITEM_TEXT2 = "Text";
 
-    private List<Map<String, String>> mList;
+    private List<Task> taskList;
 
 
     @Override
@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.list_view);
 
         //アダプタ作成(ネット上のソースコードコピペした部分だから教材のコードと齟齬が生じてる）
-        mList = new ArrayList<>();
-        final  TaskAdapter adapter = new TaskAdapter(MainActivity.this, R.layout.cell_task);
+        taskList = new ArrayList<Task>();
+        final TaskAdapter adapter = new TaskAdapter(MainActivity.this, taskList);
 
         // /クリックイベント処理
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -57,13 +57,10 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         // 表示するデータを設定
-        for (int i = 0; i < 5; i++) {
-            Map<String, String> map = new HashMap<>();
-            map.put(LIST_ITEM_TEXT1, String.valueOf(i));
-            map.put(LIST_ITEM_TEXT2, "名前・・・");
-            mList.add(map);
-
+        for (int i=0; i<100; i++) {
+            int d = i%12 + 1;
+            Task tmp = new Task("Task " + i, 2017, d, d, d ,d, false);
+            taskList.add(tmp);
         }
     }
-
 }
