@@ -60,8 +60,11 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
             taskCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(v, item.getName(), Snackbar.LENGTH_LONG).show();
-                    // Task.archive
+                    Snackbar.make(v, item.getName() + " removed", Snackbar.LENGTH_LONG).show();
+                    // getAdapter() は参照渡し？
+                    ArrayAdapter<Task> adapter = (ArrayAdapter<Task>) ((ListView) parent).getAdapter();
+                    // 仮
+                    adapter.remove(item);
                 }
             });
         }
