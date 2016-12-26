@@ -39,13 +39,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add_button);
+        add.setOnClickListener(new View.OnClickListener() {
             @Override
-            /*このへんはいじってない*/
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SubActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -70,15 +69,9 @@ public class MainActivity extends AppCompatActivity {
             Task tmp = new Task("Task " + i, 2017, d, d, d ,d, false);
             taskList.add(tmp);
         }
-        //Intentでサブ画面（編集画面）を開く
-        findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SubActivity.class);
-                startActivity(intent);
-            }
 
-        });
+
+
     }
 
 
