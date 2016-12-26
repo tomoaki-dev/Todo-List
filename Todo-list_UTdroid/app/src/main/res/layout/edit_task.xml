@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:weightSum="1">
 
 
@@ -28,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat"
+        android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp" />
 
     <EditText
@@ -36,7 +37,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/editTaskText"
         android:layout_weight="0.04"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
 
     <View
         android:layout_width="match_parent"
@@ -45,12 +48,22 @@
         android:background="@color/colorPrimaryDark"/>
 
     <Switch
-        android:text="Date"
+        android:text="Define Deadline"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:id="@+id/switch1"
         android:layout_weight="0.04"
+        android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="0.12"
+        android:id="@+id/dateView"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_margin="@dimen/fab_margin"

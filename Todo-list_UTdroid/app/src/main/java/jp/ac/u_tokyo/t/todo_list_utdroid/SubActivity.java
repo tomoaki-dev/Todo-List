@@ -1,10 +1,20 @@
 package jp.ac.u_tokyo.t.todo_list_utdroid;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
+
+
+import java.util.Calendar;
+
+import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.switch1;
 
 /**
  * Created by 智明 on 2016/12/25.
@@ -15,19 +25,70 @@ public class SubActivity extends AppCompatActivity {
     private EditText editTaskName;
     private EditText editTaskText;
 
+    DatePickerDialog datePickerDialog;
+
+
+    DatePickerDialog.OnDateSetListener DateSetListener = new DatePickerDialog.OnDateSetListener() {
+        public void onDateSet(android.widget.DatePicker datePicker, int year,
+                              int monthOfYear, int dayOfMonth) {
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_task);
 
-        editTaskName = (EditText)findViewById(R.id.editTaskName);
-        editTaskText = (EditText)findViewById(R.id.editTaskText);
+        editTaskName = (EditText) findViewById(R.id.editTaskName);
+        editTaskText = (EditText) findViewById(R.id.editTaskText);
+
+        Switch s = (Switch) findViewById(R.id.switch1);
+
+        final TextView dateView = (TextView)findViewById(R.id.dateView);
+        dateView.setVisibility(View.GONE);
+
+        s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked == true) {
+                    //ボタンを押すと日付の表示欄が表示される
+                    dateView.setVisibility(View.VISIBLE);
+                    dateView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Calendar calendar = Calendar.getInstance();
+                            int year = calendar.get(Calendar.YEAR); // 年
+                            int month = calendar.get(Calendar.MONTH); // 月
+                            int day = calendar.get(Calendar.DAY_OF_MONTH); // 日
+
+                            // 日付設定ダイアログの作成・リスナの登録
+                            final DatePickerDialog datePickerDialog = new DatePickerDialog(SubActivity.this,
+                                    android.R.style.Theme_Holo_Dialog, DateSetListener, year,month, day);
+
+                            // 日付設定ダイアログの表示
+                            datePickerDialog.show();
+
+                            //日付表示欄に選択した日付を表示(なぜか今は現在時刻が表示される仕様になってる）
+                            dateView.setText(DateFormat.format("yyyy/MM/dd, E, kk:mm", calendar));
+                        }
+                    });
+
+
+
+                }else{
+                    dateView.setVisibility(View.GONE);
+                }
+
+            }
+
+        });
+
 
         /* Intentの読み込み */
         Intent intent = getIntent();
         if (intent != null) {
             Bundle extras = intent.getExtras();
-            if(extras != null){
+            if (extras != null) {
                 /* Intentに添付されたデータを取り出す */
                 //MyData myData = extras.getParcelable(MainActivity.INTENT_KEY_RESULT);
 
@@ -35,6 +96,7 @@ public class SubActivity extends AppCompatActivity {
                 //editTaskText.setText(myData.getMessage());
             }
         }
+
 
         findViewById(R.id.buttonOK).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,4 +134,5 @@ public class SubActivity extends AppCompatActivity {
             }
         });
     }
+
 }
