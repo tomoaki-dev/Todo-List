@@ -51,8 +51,14 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.list_view);
 
         //アダプタ作成(ネット上のソースコードコピペした部分だから教材のコードと齟齬が生じてる）
-        taskList = new ArrayList<Task>();
-        final TaskAdapter adapter = new TaskAdapter(MainActivity.this, taskList);
+        taskList = new ArrayList<>();
+        // 表示するデータを設定
+        for (int i=0; i<100; i++) {
+            int d = i%12 + 1;
+            Task tmp = new Task("Task " + i, 2017, d, d, d ,d, false);
+            taskList.add(tmp);
+        }
+        TaskAdapter adapter = new TaskAdapter(MainActivity.this, taskList);
 
         // /クリックイベント処理
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -63,13 +69,13 @@ public class MainActivity extends AppCompatActivity {
         });
         listView.setAdapter(adapter);
 
+
         // 表示するデータを設定
         for (int i=0; i<100; i++) {
             int d = i%12 + 1;
             Task tmp = new Task("Task " + i, 2017, d, d, d ,d, false);
             taskList.add(tmp);
         }
-
 
 
     }
