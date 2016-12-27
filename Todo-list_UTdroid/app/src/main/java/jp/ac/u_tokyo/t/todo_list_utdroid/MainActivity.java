@@ -7,10 +7,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add_button);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,10 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.list_view);
 
+        LinearLayout tabView = (LinearLayout) findViewById(R.id.tab_view);
+        tabView.setVisibility(View.GONE);
+
         //アダプタ作成(ネット上のソースコードコピペした部分だから教材のコードと齟齬が生じてる）
         taskList = new ArrayList<>();
         // 表示するデータを設定
-        for (int i=0; i<100; i++) {
+        for (int i=0; i<10; i++) {
             int d = i%12 + 1;
             Task tmp = new Task("Task " + i,"Text", 2017, d, d, d ,d, false);
             taskList.add(tmp);
@@ -70,15 +76,10 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
 
-        // 表示するデータを設定
-        for (int i=0; i<100; i++) {
-            int d = i%12 + 1;
-            Task tmp = new Task("Task " + i,"Text", 2017, d, d, d ,d, false);
-            taskList.add(tmp);
+
         }
 
 
     }
 
 
-}

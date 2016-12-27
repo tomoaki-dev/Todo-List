@@ -8,11 +8,14 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.switch1;
 
@@ -24,6 +27,9 @@ public class SubActivity extends AppCompatActivity {
 
     private EditText editTaskName;
     private EditText editTaskText;
+
+    //ListView listView = (ListView)findViewById(R.id.list_view);
+
 
     DatePickerDialog datePickerDialog;
 
@@ -103,6 +109,16 @@ public class SubActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 /* 入力を反映 */
+                String name = editTaskName.getText().toString();
+                String text = editTaskText.getText().toString();
+                int year = 2017;
+                int month = 1;
+                int day = 1;
+                int hour = 0;
+                int minute = 0;
+                boolean isImportant = false;
+
+                registerTask(name,text,year,month,day,hour,minute,isImportant);
 
 
                 /* 処理結果を設定 */
@@ -133,6 +149,12 @@ public class SubActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.open_fade_in, R.anim.close_fade_out);
             }
         });
+    }
+
+    private void registerTask(String taskName, String taskText, int year, int month, int day, int hour, int minute, boolean isImportant){
+        ArrayList<Task> taskList = new ArrayList<Task>();
+        TaskAdapter adapter = new TaskAdapter(SubActivity.this, taskList);
+        //listView.setAdapter(adapter);
     }
 
 }
