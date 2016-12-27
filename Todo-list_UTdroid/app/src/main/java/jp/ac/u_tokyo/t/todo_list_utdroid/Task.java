@@ -11,16 +11,18 @@ import java.util.concurrent.TimeUnit;
 public class Task {
     /* メンバ変数 */
     private String taskName;
+    private String taskText;
     private Calendar deadlineTime;
     private boolean isImportant;
 
     /* コンストラクタ(set) */
-    public Task(String taskName, int year, int month, int day, int hour, int minute, boolean isImportant) {
-        this.set(taskName, year, month, day, hour, minute, isImportant);
+    public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, boolean isImportant) {
+        this.set(taskName, taskText, year, month, day, hour, minute, isImportant);
     }
 
-    private void set(String taskName, int year, int month, int day, int hour, int minute, boolean isImportant) {
+    private void set(String taskName, String taskText, int year, int month, int day, int hour, int minute, boolean isImportant) {
         this.taskName = taskName;
+        this.taskText = taskText;
         this.deadlineTime = new GregorianCalendar(year, month-1, day, hour, minute);
         this.isImportant = isImportant;
     }
@@ -28,6 +30,7 @@ public class Task {
     public String getName() {
         return taskName;
     }
+    public String getText() { return taskText; }
     public Calendar getDeadlineTime() {
         return deadlineTime;
     }

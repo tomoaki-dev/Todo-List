@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Todo-list_UTdroid</string>
     <string name="action_settings">Settings</string>
+    <string name="cancel">CANCEL</string>
+    <string name="ok">OK</string>
+    <string name="memo">memo</string>
+    <string name="task">Task</string>
+    <string name="define_deadline">Define Deadline</string>
+    <string name="importance">Importance</string>
 </resources>
