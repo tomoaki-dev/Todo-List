@@ -88,7 +88,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_weight="0.26"
-        android:id="@+id/dateView"
+        android:id="@+id/date_view"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="14dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
