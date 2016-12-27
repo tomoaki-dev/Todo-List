@@ -1,6 +1,7 @@
 package jp.ac.u_tokyo.t.todo_list_utdroid;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,11 +17,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.date_view;
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.switch1;
+import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.time;
+import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.time_view;
 
 /**
  * Created by 智明 on 2016/12/25.
@@ -31,8 +32,9 @@ public class SubActivity extends AppCompatActivity {
     private EditText editTaskName;
     private EditText editTaskText;
 
-    Calendar calendar = Calendar.getInstance();
-    int year, month, day;
+    Calendar calendar1 = Calendar.getInstance();//日付取得用
+    Calendar calendar2 = Calendar.getInstance();//時刻取得用
+    int year, month, day, hour, minute;
 
 
     //ListView listView = (ListView)findViewById(R.id.list_view);
@@ -48,10 +50,12 @@ public class SubActivity extends AppCompatActivity {
         editTaskText = (EditText) findViewById(R.id.editTaskText);
 
         final TextView dateView = (TextView)findViewById(date_view);
+        final TextView timeView = (TextView)findViewById(time_view);
 
         Switch s1 = (Switch) findViewById(R.id.switch1);
 
         dateView.setVisibility(View.GONE);
+        timeView.setVisibility(View.GONE);
 
         //日付取得用リスナ作成
         final DatePickerDialog.OnDateSetListener DateSetListener = new DatePickerDialog.OnDateSetListener() {
@@ -59,8 +63,20 @@ public class SubActivity extends AppCompatActivity {
             public void onDateSet(android.widget.DatePicker datePicker, int year,
                                   int month, int day) {
                 //日付の取得
-                calendar.set(year, month, day);
-                dateView.setText(DateFormat.format("yyyy/MM/dd",calendar));
+                calendar1.set(year, month, day);
+                dateView.setText(DateFormat.format("yyyy/MM/dd",calendar1));
+
+            }
+        };
+
+        //時刻取得用リスナ作成
+        final TimePickerDialog.OnTimeSetListener TimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(android.widget.TimePicker timePicker,
+                                  int hour, int minute) {
+                //時刻の取得
+                calendar2.set(hour,minute);
+                timeView.setText(DateFormat.format("hh:mm",calendar2));
 
             }
         };
@@ -69,17 +85,19 @@ public class SubActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked == true) {
-                    //ボタンを押すと日付の表示欄が表示される
+                    //ボタンを押すと日付・時刻の表示欄が表示される
                     dateView.setVisibility(View.VISIBLE);
+                    timeView.setVisibility(View.VISIBLE);
 
-                    dateView.setText(DateFormat.format("yyyy/MM/dd",calendar));
+                    dateView.setText(DateFormat.format("yyyy/MM/dd",calendar1));
+                    timeView.setText(DateFormat.format("hh:mm",calendar2));
 
                     dateView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            year = calendar.get(Calendar.YEAR); // 年
-                            month = calendar.get(Calendar.MONTH); // 月
-                            day = calendar.get(Calendar.DAY_OF_MONTH); // 日
+                            year = calendar1.get(Calendar.YEAR); // 年
+                            month = calendar1.get(Calendar.MONTH); // 月
+                            day = calendar1.get(Calendar.DAY_OF_MONTH); // 日
 
                             // 日付設定ダイアログの作成・リスナの登録
                             final DatePickerDialog datePickerDialog = new DatePickerDialog(SubActivity.this,
@@ -91,8 +109,25 @@ public class SubActivity extends AppCompatActivity {
                         }
                     });
 
+                    timeView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            hour = calendar2.get(Calendar.HOUR_OF_DAY); // 時
+                            minute = calendar2.get(Calendar.MINUTE); // 分
+
+                            // 時刻設定ダイアログの作成・リスナの登録
+                            final TimePickerDialog timePickerDialog = new TimePickerDialog(SubActivity.this,
+                                    android.R.style.Theme_Holo_Dialog, TimeSetListener,hour,minute,true);
+
+                            // 時刻設定ダイアログの表示
+                            timePickerDialog.show();
+
+                        }
+                    });
+
                 }else{
                     dateView.setVisibility(View.GONE);
+                    timeView.setVisibility(View.GONE);
                 }
 
             }
@@ -121,20 +156,20 @@ public class SubActivity extends AppCompatActivity {
                 /* 入力を反映 */
                 String name = editTaskName.getText().toString();
                 String text = editTaskText.getText().toString();
-                year = calendar.get(Calendar.YEAR); // 年
-                month = calendar.get(Calendar.MONTH)+1; // 月
-                day = calendar.get(Calendar.DAY_OF_MONTH); // 日
-                int hour = 0;
-                int minute = 0;
+                year = calendar1.get(Calendar.YEAR); // 年
+                month = calendar1.get(Calendar.MONTH)+1; // 月
+                day = calendar1.get(Calendar.DAY_OF_MONTH); // 日
+                hour = calendar2.get(Calendar.HOUR_OF_DAY); // 時
+                minute = calendar2.get(Calendar.MINUTE); // 分
                 boolean isImportant = false;
 
                 Toast.makeText(
                         SubActivity.this,
                          "{ "+name +" } "+"{ "+text+" }" + "  "+  year + "/" + month
-                                + "/" + day, Toast.LENGTH_LONG)
+                                + "/" + day +"  " + hour +":"+ minute, Toast.LENGTH_LONG)
                         .show();
 
-                /*nameとtextに何か入れた途端に日付が初期化される？？？*/
+
 
                 //本当はこっちでデータを出力したい
                 //registerTask(name,text,year,month,day,hour,minute,isImportant);
