@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 public class TaskDatabase {
-    private final static String DATABASE_NAME = "database";
+    private final static String DATABASE_NAME = "TaskList.db";
     private final static String ACTIVE_TASK_TABLE = "activeTaskTable";
     private final static String ARCHIVE_TASK_TABLE = "archiveTaskTable";
     private final static int DATABASE_VERSION = 1;

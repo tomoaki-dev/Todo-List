@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -62,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
             }
             taskList = taskDatabase.read();
         }
-        TaskAdapter taskAdapter = new TaskAdapter(MainActivity.this, taskList);
-        listView.setAdapter(taskAdapter);
+        listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
 
         // /クリックイベント処理
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
