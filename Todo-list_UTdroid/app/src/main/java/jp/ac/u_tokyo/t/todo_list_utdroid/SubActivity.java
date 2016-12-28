@@ -4,12 +4,15 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +24,8 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.date_view;
+import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.ratingBar;
+import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.starReset;
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.switch1;
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.time;
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.time_view;
@@ -37,7 +42,8 @@ public class SubActivity extends AppCompatActivity {
     Calendar calendar1 = Calendar.getInstance();//日付取得用
     Calendar calendar2 = Calendar.getInstance();//時刻取得用
     int year, month, day, hour, minute;
-
+    float ImportanceRatio;
+    public String Importance;
 
     //ListView listView = (ListView)findViewById(R.id.list_view);
 
@@ -59,6 +65,7 @@ public class SubActivity extends AppCompatActivity {
         dateView.setVisibility(View.GONE);
         timeView.setVisibility(View.GONE);
 
+        /*タイムゾーンの設定（これを忘れるとTimePickerがおかしなことになる）*/
         // get the supported ids for GMT-09:00 (Japanese Standard Time)
         String[] ids = TimeZone.getAvailableIDs(-9 * 60 * 60 * 1000);
         // if no ids were returned, something is wrong. get out.
@@ -87,7 +94,7 @@ public class SubActivity extends AppCompatActivity {
             @Override
             public void onTimeSet(android.widget.TimePicker timePicker,
                                   int hour, int minute) {
-                //時刻の取得
+                //時刻の取得(一度初期化してそれぞれセットしてあげないとダメらしい)
                 calendar2.clear();
                 calendar2.set(Calendar.HOUR_OF_DAY,hour);
                 calendar2.set(Calendar.MINUTE,minute);
@@ -150,6 +157,26 @@ public class SubActivity extends AppCompatActivity {
         });
 
 
+        final RatingBar rb =(RatingBar)findViewById(ratingBar);
+        rb.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingbar, float rating, boolean fromUser) {
+                ImportanceRatio = ratingbar.getRating();
+
+            }
+        });
+
+        Button btn = (Button)findViewById(starReset);
+        btn.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                ImportanceRatio = 0;
+                rb.setRating(0);
+            }
+        });
+
+
+
         /* Intentの読み込み */
         Intent intent = getIntent();
         if (intent != null) {
@@ -176,12 +203,19 @@ public class SubActivity extends AppCompatActivity {
                 day = calendar1.get(Calendar.DAY_OF_MONTH); // 日
                 hour = calendar2.get(Calendar.HOUR_OF_DAY); // 時
                 minute = calendar2.get(Calendar.MINUTE); // 分
-                boolean isImportant = false;
+
+                if(ImportanceRatio==1.0){
+                    Importance = "Low";
+                }else if(ImportanceRatio==2.0){
+                    Importance = "Middle";
+                }else if(ImportanceRatio==3.0){
+                    Importance = "High";
+                };
 
                 Toast.makeText(
                         SubActivity.this,
                          "{ "+name +" } "+"{ "+text+" }" + "  "+  year + "/" + month
-                                + "/" + day +"  " + hour +":"+ minute, Toast.LENGTH_LONG)
+                                + "/" + day +"  " + hour +":"+ minute + "Importance: " + Importance, Toast.LENGTH_LONG)
                         .show();
 
 
