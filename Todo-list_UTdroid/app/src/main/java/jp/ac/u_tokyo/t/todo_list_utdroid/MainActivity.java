@@ -11,10 +11,12 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LIST_ITEM_TEXT1 = "Task";
     private static final String LIST_ITEM_TEXT2 = "Text";
-
-    private List<Task> taskList;
 
     private final int ADD_TASK = 0;
     private final int EDIT_TASK = 1;
@@ -51,14 +51,19 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.list_view);
 
         //アダプタ作成(ネット上のソースコードコピペした部分だから教材のコードと齟齬が生じてる）
-        taskList = new ArrayList<>();
         // 表示するデータを設定
-        for (int i=0; i<100; i++) {
-            int d = i%12 + 1;
-            Task tmp = new Task("Task " + i,"Text", 2017, d, d, d ,d, false);
-            taskList.add(tmp);
+        TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+        List<Task> taskList = taskDatabase.read();
+        if (taskList.size() == 0) {
+            for (int i = 0; i < 15; i++) {
+                int d = i % 12 + 1;
+                long time = new GregorianCalendar(2017, d, d, d, d).getTimeInMillis();
+                taskDatabase.add("Task " + i, "Task", time, 0);
+            }
+            taskList = taskDatabase.read();
         }
-        TaskAdapter adapter = new TaskAdapter(MainActivity.this, taskList);
+        TaskAdapter taskAdapter = new TaskAdapter(MainActivity.this, taskList);
+        listView.setAdapter(taskAdapter);
 
         // /クリックイベント処理
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -67,18 +72,5 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("ItemClick", "Position=" + String.valueOf(position));
             }
         });
-        listView.setAdapter(adapter);
-
-
-        // 表示するデータを設定
-        for (int i=0; i<100; i++) {
-            int d = i%12 + 1;
-            Task tmp = new Task("Task " + i,"Text", 2017, d, d, d ,d, false);
-            taskList.add(tmp);
-        }
-
-
     }
-
-
 }
