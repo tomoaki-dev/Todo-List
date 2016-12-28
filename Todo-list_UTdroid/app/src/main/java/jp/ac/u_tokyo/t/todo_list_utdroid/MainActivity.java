@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         // 表示するデータを設定
         for (int i=0; i<10; i++) {
             int d = i%12 + 1;
-            Task tmp = new Task("Task " + i,"Text", 2017, d, d, d ,d, false);
+            Task tmp = new Task("Task " + i,"Text", 2017, d, d, d ,d, "Middle");
             taskList.add(tmp);
         }
         TaskAdapter adapter = new TaskAdapter(MainActivity.this, taskList);
