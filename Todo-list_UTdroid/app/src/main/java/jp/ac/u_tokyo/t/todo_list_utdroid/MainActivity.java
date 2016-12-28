@@ -69,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("ItemClick", "Position=" + String.valueOf(position));
+
+                Intent intent = new Intent(MainActivity.this, SubActivity.class);
+                startActivity(intent);
+
             }
         });
         listView.setAdapter(adapter);

@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.date_view;
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.switch1;
@@ -57,6 +59,17 @@ public class SubActivity extends AppCompatActivity {
         dateView.setVisibility(View.GONE);
         timeView.setVisibility(View.GONE);
 
+        // get the supported ids for GMT-09:00 (Japanese Standard Time)
+        String[] ids = TimeZone.getAvailableIDs(-9 * 60 * 60 * 1000);
+        // if no ids were returned, something is wrong. get out.
+        if (ids.length == 0)
+            System.exit(0);
+
+        // create a Japanese Standard Time time zone
+        SimpleTimeZone pdt = new SimpleTimeZone(-9 * 60 * 60 * 1000, ids[0]);
+
+
+
         //日付取得用リスナ作成
         final DatePickerDialog.OnDateSetListener DateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -75,7 +88,9 @@ public class SubActivity extends AppCompatActivity {
             public void onTimeSet(android.widget.TimePicker timePicker,
                                   int hour, int minute) {
                 //時刻の取得
-                calendar2.set(hour,minute);
+                calendar2.clear();
+                calendar2.set(Calendar.HOUR_OF_DAY,hour);
+                calendar2.set(Calendar.MINUTE,minute);
                 timeView.setText(DateFormat.format("hh:mm",calendar2));
 
             }
