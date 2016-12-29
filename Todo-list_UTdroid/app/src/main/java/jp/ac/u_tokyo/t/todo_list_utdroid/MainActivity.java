@@ -7,18 +7,19 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add_button);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ListView listView = (ListView) findViewById(R.id.list_view);
+
+        LinearLayout tabView = (LinearLayout) findViewById(R.id.tab_view);
+        tabView.setVisibility(View.GONE);
 
         //アダプタ作成(ネット上のソースコードコピペした部分だから教材のコードと齟齬が生じてる）
         // 表示するデータを設定
@@ -68,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("ItemClick", "Position=" + String.valueOf(position));
+
+                Intent intent = new Intent(MainActivity.this, SubActivity.class);
+                startActivity(intent);
+
             }
         });
     }

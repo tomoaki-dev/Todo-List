@@ -13,11 +13,11 @@ public class Task {
     private String taskName;
     private String taskText;
     private Calendar deadlineTime;
-    private boolean isImportant;
+    private String Importance;
 
     /* コンストラクタ(set) */
-    public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, boolean isImportant) {
-        this.set(taskName, taskText, year, month, day, hour, minute, isImportant);
+    public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, String Importance) {
+        this.set(taskName, taskText, year, month, day, hour, minute, Importance);
     }
     // for Database
     public Task(String taskName, String taskText, long deadlineTime, boolean isImportant) {
@@ -28,11 +28,11 @@ public class Task {
         this.isImportant = isImportant;
     }
 
-    private void set(String taskName, String taskText, int year, int month, int day, int hour, int minute, boolean isImportant) {
+    private void set(String taskName, String taskText, int year, int month, int day, int hour, int minute, String Importance) {
         this.taskName = taskName;
         this.taskText = taskText;
         this.deadlineTime = new GregorianCalendar(year, month-1, day, hour, minute);
-        this.isImportant = isImportant;
+        this.Importance = Importance;
     }
 
     public String getName() {
@@ -44,8 +44,5 @@ public class Task {
     }
     public long remainDay() {
         return (deadlineTime.getTimeInMillis() - System.currentTimeMillis()) / TimeUnit.DAYS.toMillis(1);
-    }
-    public boolean isImportant() {
-        return isImportant;
     }
 }
