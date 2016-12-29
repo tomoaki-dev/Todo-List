@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -23,8 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LIST_ITEM_TEXT1 = "Task";
     private static final String LIST_ITEM_TEXT2 = "Text";
-
-    private List<Task> taskList;
 
     private final int ADD_TASK = 0;
     private final int EDIT_TASK = 1;
@@ -55,14 +55,18 @@ public class MainActivity extends AppCompatActivity {
         tabView.setVisibility(View.GONE);
 
         //アダプタ作成(ネット上のソースコードコピペした部分だから教材のコードと齟齬が生じてる）
-        taskList = new ArrayList<>();
         // 表示するデータを設定
-        for (int i=0; i<10; i++) {
-            int d = i%12 + 1;
-            Task tmp = new Task("Task " + i,"Text", 2017, d, d, d ,d, "Middle");
-            taskList.add(tmp);
+        TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+        List<Task> taskList = taskDatabase.read();
+        if (taskList.size() == 0) {
+            for (int i = 0; i < 15; i++) {
+                int d = i % 12 + 1;
+                long time = new GregorianCalendar(2017, d, d, d, d).getTimeInMillis();
+                taskDatabase.add("Task " + i, "Task", time, 0);
+            }
+            taskList = taskDatabase.read();
         }
-        TaskAdapter adapter = new TaskAdapter(MainActivity.this, taskList);
+        listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
 
         // /クリックイベント処理
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -75,13 +79,5 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        listView.setAdapter(adapter);
-
-
-
-        }
-
-
     }
-
-
+}

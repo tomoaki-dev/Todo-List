@@ -19,6 +19,14 @@ public class Task {
     public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, String Importance) {
         this.set(taskName, taskText, year, month, day, hour, minute, Importance);
     }
+    // for Database
+    public Task(String taskName, String taskText, long deadlineTime, boolean isImportant) {
+        this.taskName = taskName;
+        this.taskText = taskText;
+        this.deadlineTime = new GregorianCalendar();
+        this.deadlineTime.setTimeInMillis(deadlineTime);
+        this.isImportant = isImportant;
+    }
 
     private void set(String taskName, String taskText, int year, int month, int day, int hour, int minute, String Importance) {
         this.taskName = taskName;
