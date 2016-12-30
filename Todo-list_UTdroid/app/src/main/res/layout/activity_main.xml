@@ -63,7 +63,8 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="14dp"
             android:layout_marginEnd="10dp"
-            app:backgroundTint="@android:color/holo_red_light" />
+            app:backgroundTint="@android:color/holo_red_light"
+            android:focusable="false"/>
     </RelativeLayout>
 
 </FrameLayout>

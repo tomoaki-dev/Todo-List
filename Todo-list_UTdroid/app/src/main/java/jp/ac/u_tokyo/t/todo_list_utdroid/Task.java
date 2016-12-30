@@ -13,26 +13,26 @@ public class Task {
     private String taskName;
     private String taskText;
     private Calendar deadlineTime;
-    private String Importance;
+    private boolean Importance;
 
     /* コンストラクタ(set) */
     public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, String Importance) {
         this.set(taskName, taskText, year, month, day, hour, minute, Importance);
     }
     // for Database
-    public Task(String taskName, String taskText, long deadlineTime, boolean isImportant) {
+    public Task(String taskName, String taskText, long deadlineTime, boolean Importance) {
         this.taskName = taskName;
         this.taskText = taskText;
         this.deadlineTime = new GregorianCalendar();
         this.deadlineTime.setTimeInMillis(deadlineTime);
-        this.isImportant = isImportant;
+        this.Importance = Importance;
     }
 
     private void set(String taskName, String taskText, int year, int month, int day, int hour, int minute, String Importance) {
         this.taskName = taskName;
         this.taskText = taskText;
         this.deadlineTime = new GregorianCalendar(year, month-1, day, hour, minute);
-        this.Importance = Importance;
+        //this.Importance = new ;
     }
 
     public String getName() {

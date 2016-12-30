@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout tabView = (LinearLayout) findViewById(R.id.tab_view);
         tabView.setVisibility(View.GONE);
 
-        //アダプタ作成(ネット上のソースコードコピペした部分だから教材のコードと齟齬が生じてる）
+        //アダプタ作成
         // 表示するデータを設定
         TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
         List<Task> taskList = taskDatabase.read();
@@ -69,15 +70,25 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
 
         // /クリックイベント処理
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("ItemClick", "Position=" + String.valueOf(position));
-
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                ListView listview = (ListView) parent;
+                //Log.d("ItemClick", "Position=" + String.valueOf(position));
                 Intent intent = new Intent(MainActivity.this, SubActivity.class);
                 startActivity(intent);
 
+                Toast.makeText(
+                        MainActivity.this,
+                        "longclick Item id:"+id, Toast.LENGTH_LONG)
+                        .show();
+                return false;
             }
+
+
         });
+
+
+
     }
 }
