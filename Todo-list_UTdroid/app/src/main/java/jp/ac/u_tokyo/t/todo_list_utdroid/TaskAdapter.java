@@ -47,7 +47,7 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
             TextView taskName = (TextView) view.findViewById(R.id.taskName);
             TextView deadlineTime = (TextView) view.findViewById(R.id.deadlineTime);
             TextView remainDay = (TextView) view.findViewById(R.id.remainDay);
-            CheckBox taskCheckBox = (CheckBox) view.findViewById(R.id.taskCheckBox);
+            final CheckBox taskCheckBox = (CheckBox) view.findViewById(R.id.taskCheckBox);
 
             /* 名前とメッセージを表示 、ここはまだ作ってないTask.javaで扱う*/
             taskName.setText(item.getName());
@@ -72,6 +72,7 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
                     adapter.remove(item);
                     TaskDatabase taskDatabase = new TaskDatabase(getContext());
                     taskDatabase.delete(item);
+                    taskCheckBox.setChecked(false);
                 }
             });
         }
