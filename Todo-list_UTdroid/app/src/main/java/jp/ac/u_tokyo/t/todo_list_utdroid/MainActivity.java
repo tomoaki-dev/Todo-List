@@ -88,16 +88,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
-
-
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-            listView.setAdapter(new TaskAdapter(this, new TaskDatabase(this).read()));
-        }
     }
 
     @Override

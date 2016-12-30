@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -202,7 +203,7 @@ public class SubActivity extends AppCompatActivity {
                 String name = editTaskName.getText().toString();
                 String text = editTaskText.getText().toString();
                 year = calendar1.get(Calendar.YEAR); // 年
-                month = calendar1.get(Calendar.MONTH)+1; // 月
+                month = calendar1.get(Calendar.MONTH); // 月
                 day = calendar1.get(Calendar.DAY_OF_MONTH); // 日
                 hour = calendar2.get(Calendar.HOUR_OF_DAY); // 時
                 minute = calendar2.get(Calendar.MINUTE); // 分
@@ -221,8 +222,9 @@ public class SubActivity extends AppCompatActivity {
                         .show();
 */
                 if (deadlineTime != 0) {
-                    long deadlineTime = new GregorianCalendar(year, month, day, hour, minute).getTimeInMillis();
+                    deadlineTime = new GregorianCalendar(year, month, day, hour, minute).getTimeInMillis();
                 }
+                Log.d("add", "deadline = " + deadlineTime);
                 TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
                 taskDatabase.add(name, text, deadlineTime, (int) ImportanceRatio);
 
