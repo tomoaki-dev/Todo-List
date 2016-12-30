@@ -96,9 +96,9 @@ public class SubActivity extends AppCompatActivity {
                                   int hour, int minute) {
                 //時刻の取得(一度初期化してそれぞれセットしてあげないとダメらしい)
                 calendar2.clear();
-                calendar2.set(Calendar.HOUR,hour);
+                calendar2.set(Calendar.HOUR_OF_DAY,hour);
                 calendar2.set(Calendar.MINUTE,minute);
-                timeView.setText(DateFormat.format("hh:mm",calendar2));
+                timeView.setText(DateFormat.format("kk:mm",calendar2));
 
             }
         };
@@ -134,7 +134,7 @@ public class SubActivity extends AppCompatActivity {
                     timeView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            hour = calendar2.get(Calendar.HOUR); // 時
+                            hour = calendar2.get(Calendar.HOUR_OF_DAY); // 時
                             minute = calendar2.get(Calendar.MINUTE); // 分
 
                             // 時刻設定ダイアログの作成・リスナの登録
@@ -201,7 +201,7 @@ public class SubActivity extends AppCompatActivity {
                 year = calendar1.get(Calendar.YEAR); // 年
                 month = calendar1.get(Calendar.MONTH)+1; // 月
                 day = calendar1.get(Calendar.DAY_OF_MONTH); // 日
-                hour = calendar2.get(Calendar.HOUR); // 時
+                hour = calendar2.get(Calendar.HOUR_OF_DAY); // 時
                 minute = calendar2.get(Calendar.MINUTE); // 分
 
                 if(ImportanceRatio==1.0){
@@ -214,8 +214,7 @@ public class SubActivity extends AppCompatActivity {
 
                 Toast.makeText(
                         SubActivity.this,
-                         "{ "+name +" } "+"{ "+text+" }" + "  "+  year + "/" + month
-                                + "/" + day +"  " + hour +":"+ minute + "Importance: " + Importance, Toast.LENGTH_LONG)
+                         "{ "+name +" } "+"{ "+text+" }" + "  "+  DateFormat.format("yyyy/MM/dd",calendar1) + " "+ DateFormat.format("kk:mm",calendar2) + " Importance: " + Importance, Toast.LENGTH_LONG)
                         .show();
 
 
