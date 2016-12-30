@@ -78,10 +78,11 @@ public class MainActivity extends AppCompatActivity {
                 //Log.d("ItemClick", "Position=" + String.valueOf(position));
                 Intent intent = new Intent(MainActivity.this, SubActivity.class);
                 startActivity(intent);
+                Task task = (Task) parent.getItemAtPosition(position);
 
                 Toast.makeText(
                         MainActivity.this,
-                        "longclick Item id:"+id, Toast.LENGTH_LONG)
+                        "longclick Item id:"+ task.getTaskID(), Toast.LENGTH_LONG)
                         .show();
                 return false;
             }
