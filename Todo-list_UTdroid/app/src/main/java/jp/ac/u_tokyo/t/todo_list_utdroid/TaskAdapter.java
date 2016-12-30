@@ -51,10 +51,14 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
 
             /* 名前とメッセージを表示 、ここはまだ作ってないTask.javaで扱う*/
             taskName.setText(item.getName());
-            deadlineTime.setText(DateFormat.format("yyyy/MM/dd, E, kk:mm", item.getDeadlineTime()));
-            remainDay.setText("あと" + item.remainDay() + "日");
+            if (item.getDeadlineTime().getTimeInMillis() != 0) {
+                deadlineTime.setText(DateFormat.format("yyyy/MM/dd, E, kk:mm", item.getDeadlineTime()));
+                remainDay.setText("あと" + item.remainDay() + "日");
+            } else {
+                deadlineTime.setText("いつか");
+            }
             // 画面外でチェックを外す (一時的)
-            taskCheckBox.setChecked(false);
+            //taskCheckBox.setChecked(false);
             //taskCheckBox.setTag(position);
 
             //final ListView list = (ListView) parent;
@@ -66,6 +70,8 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
                     ArrayAdapter<Task> adapter = (ArrayAdapter<Task>) ((ListView) parent).getAdapter();
                     // 仮
                     adapter.remove(item);
+                    TaskDatabase taskDatabase = new TaskDatabase(getContext());
+                    taskDatabase.delete(item);
                 }
             });
         }

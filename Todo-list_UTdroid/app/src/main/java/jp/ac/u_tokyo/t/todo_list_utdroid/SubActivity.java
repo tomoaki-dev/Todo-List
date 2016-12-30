@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
@@ -44,6 +45,7 @@ public class SubActivity extends AppCompatActivity {
     int year, month, day, hour, minute;
     float ImportanceRatio;
     public String Importance;
+    long deadlineTime = 0;
 
     //ListView listView = (ListView)findViewById(R.id.list_view);
 
@@ -106,7 +108,7 @@ public class SubActivity extends AppCompatActivity {
         s1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked == true) {
+                if (isChecked) {
                     //ボタンを押すと日付・時刻の表示欄が表示される
                     dateView.setVisibility(View.VISIBLE);
                     timeView.setVisibility(View.VISIBLE);
@@ -146,10 +148,11 @@ public class SubActivity extends AppCompatActivity {
 
                         }
                     });
-
+                    deadlineTime = 1;
                 }else{
                     dateView.setVisibility(View.GONE);
                     timeView.setVisibility(View.GONE);
+                    deadlineTime = 0;
                 }
 
             }
@@ -212,12 +215,16 @@ public class SubActivity extends AppCompatActivity {
                     Importance = "High";
                 };
 
-                Toast.makeText(
+/*                Toast.makeText(
                         SubActivity.this,
                          "{ "+name +" } "+"{ "+text+" }" + "  "+  DateFormat.format("yyyy/MM/dd",calendar1) + " "+ DateFormat.format("kk:mm",calendar2) + " Importance: " + Importance, Toast.LENGTH_LONG)
                         .show();
-
-
+*/
+                if (deadlineTime != 0) {
+                    long deadlineTime = new GregorianCalendar(year, month, day, hour, minute).getTimeInMillis();
+                }
+                TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+                taskDatabase.add(name, text, deadlineTime, (int) ImportanceRatio);
 
                 //本当はこっちでデータを出力したい
                 //registerTask(name,text,year,month,day,hour,minute,isImportant);

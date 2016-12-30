@@ -10,31 +10,37 @@ import java.util.concurrent.TimeUnit;
 
 public class Task {
     /* メンバ変数 */
+    private int taskID;
     private String taskName;
     private String taskText;
     private Calendar deadlineTime;
-    private boolean Importance;
+    /* 0 - 3 */
+    private int taskImportance;
 
     /* コンストラクタ(set) */
-    public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, String Importance) {
-        this.set(taskName, taskText, year, month, day, hour, minute, Importance);
-    }
+/*    public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, int taskImportance) {
+        this.set(taskName, taskText, year, month, day, hour, minute, taskImportance);
+    }*/
     // for Database
-    public Task(String taskName, String taskText, long deadlineTime, boolean Importance) {
+    public Task(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance) {
+        this.taskID = taskID;
         this.taskName = taskName;
         this.taskText = taskText;
         this.deadlineTime = new GregorianCalendar();
         this.deadlineTime.setTimeInMillis(deadlineTime);
-        this.Importance = Importance;
+        this.taskImportance = taskImportance;
     }
 
-    private void set(String taskName, String taskText, int year, int month, int day, int hour, int minute, String Importance) {
+/*    private void set(String taskName, String taskText, int year, int month, int day, int hour, int minute, int taskImportance) {
         this.taskName = taskName;
         this.taskText = taskText;
         this.deadlineTime = new GregorianCalendar(year, month-1, day, hour, minute);
-        //this.Importance = new ;
-    }
+        this.taskImportance = taskImportance;
+    }*/
 
+    public int getTaskID() {
+        return taskID;
+    }
     public String getName() {
         return taskName;
     }
@@ -44,5 +50,8 @@ public class Task {
     }
     public long remainDay() {
         return (deadlineTime.getTimeInMillis() - System.currentTimeMillis()) / TimeUnit.DAYS.toMillis(1);
+    }
+    public int getTaskImportance() {
+        return taskImportance;
     }
 }
