@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SubActivity.class);
-                startActivityForResult(intent, 0);
+                startActivityForResult(intent, ADD_TASK);
             }
         });
 
@@ -76,9 +76,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 ListView listview = (ListView) parent;
                 //Log.d("ItemClick", "Position=" + String.valueOf(position));
-                Intent intent = new Intent(MainActivity.this, SubActivity.class);
-                startActivity(intent);
                 Task task = (Task) parent.getItemAtPosition(position);
+                Intent intent = new Intent(MainActivity.this, SubActivity.class);
+                intent.putExtra("id",task.getTaskID());
+                startActivityForResult(intent,EDIT_TASK);
+
 
                 Toast.makeText(
                         MainActivity.this,

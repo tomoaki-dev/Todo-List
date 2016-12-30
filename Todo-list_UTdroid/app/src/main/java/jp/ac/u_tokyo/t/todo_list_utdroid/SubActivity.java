@@ -41,16 +41,13 @@ public class SubActivity extends AppCompatActivity {
     private EditText editTaskName;
     private EditText editTaskText;
 
-    Calendar calendar1 = Calendar.getInstance();//日付取得用
+    GregorianCalendar calendar1 = new GregorianCalendar();//日付取得用
     Calendar calendar2 = Calendar.getInstance();//時刻取得用
     int year, month, day, hour, minute;
     float ImportanceRatio;
     public String Importance;
     long deadlineTime = 0;
-
-    //ListView listView = (ListView)findViewById(R.id.list_view);
-
-
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,7 +179,7 @@ public class SubActivity extends AppCompatActivity {
 
 
         /* Intentの読み込み */
-        Intent intent = getIntent();
+        intent = getIntent();
         if (intent != null) {
             Bundle extras = intent.getExtras();
             if (extras != null) {
@@ -198,7 +195,7 @@ public class SubActivity extends AppCompatActivity {
         findViewById(R.id.buttonOK).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
+                intent = new Intent();
                 /* 入力を反映 */
                 String name = editTaskName.getText().toString();
                 String text = editTaskText.getText().toString();
@@ -228,10 +225,6 @@ public class SubActivity extends AppCompatActivity {
                 TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
                 taskDatabase.add(name, text, deadlineTime, (int) ImportanceRatio);
 
-                //本当はこっちでデータを出力したい
-                //registerTask(name,text,year,month,day,hour,minute,isImportant);
-
-
                 /* 処理結果を設定 */
                 setResult(RESULT_OK, intent);
 
@@ -246,7 +239,7 @@ public class SubActivity extends AppCompatActivity {
         findViewById(R.id.buttonCancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
+                intent = new Intent();
                 /* 何も反映しない */
 
 
@@ -260,12 +253,6 @@ public class SubActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.open_fade_in, R.anim.close_fade_out);
             }
         });
-    }
-
-    private void registerTask(String taskName, String taskText, int year, int month, int day, int hour, int minute, boolean isImportant){
-        ArrayList<Task> taskList = new ArrayList<Task>();
-        TaskAdapter adapter = new TaskAdapter(SubActivity.this, taskList);
-        //listView.setAdapter(adapter);
     }
 
 }
