@@ -33,23 +33,24 @@ public class MainActivity extends AppCompatActivity {
     public final static String INTENT_KEY_RESULT = "intentKeyResult";
     public final static String INTENT_KEY_FILEPATH = "intentKeyFilePath";
 
+    ListView listView;
+    List<Task> taskList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add_button);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SubActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 0);
             }
         });
 
-        ListView listView = (ListView) findViewById(R.id.list_view);
+        listView = (ListView) findViewById(R.id.list_view);
 
         LinearLayout tabView = (LinearLayout) findViewById(R.id.tab_view);
         tabView.setVisibility(View.GONE);
@@ -57,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
         //アダプタ作成(ネット上のソースコードコピペした部分だから教材のコードと齟齬が生じてる）
         // 表示するデータを設定
         TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
-        List<Task> taskList = taskDatabase.read();
+        taskList = taskDatabase.read();
         if (taskList.size() == 0) {
-            for (int i = 0; i < 15; i++) {
+            for (int i = 0; i < 5; i++) {
                 int d = i % 12 + 1;
                 long time = new GregorianCalendar(2017, d, d, d, d).getTimeInMillis();
                 taskDatabase.add("Task " + i, "Task", time, 0);
@@ -79,5 +80,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            listView.setAdapter(new TaskAdapter(this, new TaskDatabase(this).read()));
+        }
     }
 }
