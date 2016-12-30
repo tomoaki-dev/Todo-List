@@ -100,7 +100,7 @@ public class SubActivity extends AppCompatActivity {
                 calendar2.clear();
                 calendar2.set(Calendar.HOUR_OF_DAY,hour);
                 calendar2.set(Calendar.MINUTE,minute);
-                timeView.setText(DateFormat.format("hh:mm",calendar2));
+                timeView.setText(DateFormat.format("kk:mm",calendar2));
 
             }
         };
@@ -114,7 +114,7 @@ public class SubActivity extends AppCompatActivity {
                     timeView.setVisibility(View.VISIBLE);
 
                     dateView.setText(DateFormat.format("yyyy/MM/dd",calendar1));
-                    timeView.setText(DateFormat.format("hh:mm",calendar2));
+                    timeView.setText(DateFormat.format("kk:mm",calendar2));
 
                     dateView.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -217,8 +217,7 @@ public class SubActivity extends AppCompatActivity {
 
 /*                Toast.makeText(
                         SubActivity.this,
-                         "{ "+name +" } "+"{ "+text+" }" + "  "+  year + "/" + month
-                                + "/" + day +"  " + hour +":"+ minute + "Importance: " + Importance, Toast.LENGTH_LONG)
+                         "{ "+name +" } "+"{ "+text+" }" + "  "+  DateFormat.format("yyyy/MM/dd",calendar1) + " "+ DateFormat.format("kk:mm",calendar2) + " Importance: " + Importance, Toast.LENGTH_LONG)
                         .show();
 */
                 if (deadlineTime != 0) {
