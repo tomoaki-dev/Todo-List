@@ -21,11 +21,11 @@ public class TaskDatabase {
     private final static String ARCHIVE_TASK_TABLE = "archiveTaskTable";
     private final static int DATABASE_VERSION = 1;
 
-//    private final static String taskID = "taskID"
-//    private final static String taskName = "taskName";
-//    private final static String taskText = "taskText";
-//    private final static String deadlineTime = "deadlineTime";
-//    private final static String isImportant = "isImportant";
+    private final static String taskID = "taskID";
+    private final static String taskName = "taskName";
+    private final static String taskText = "taskText";
+    private final static String deadlineTime = "deadlineTime";
+    private final static String isImportant = "taskImportance";
 
     /* 内部に保持 */
     private SQLiteDatabase database;
@@ -36,15 +36,9 @@ public class TaskDatabase {
     }
 
     /* デーダベースに追加 */
-    public void add(String taskName, String taskText, long deadlineTime, int isImportant) {
+    public void add(String taskName, String taskText, long deadlineTime, int taskImportance) {
         database = taskHelper.getWritableDatabase();
-        ContentValues content = new ContentValues();
-        content.put("taskName", taskName);
-        content.put("taskText", taskText);
-        content.put("deadlineTime", deadlineTime);
-        // 0 - 3
-        content.put("taskImportance", isImportant);
-        database.insert(ACTIVE_TASK_TABLE, null, content);
+        database.insert(ACTIVE_TASK_TABLE, null, getContentValues(taskName, taskText, deadlineTime, taskImportance));
         database.close();
     }
 
@@ -56,13 +50,7 @@ public class TaskDatabase {
         /* 一つ目に移動しつつ存在を確認 */
         if (cursor.moveToFirst()) {
             do {
-                int taskID = cursor.getInt(cursor.getColumnIndex("taskID"));
-                String taskName = cursor.getString(cursor.getColumnIndex("taskName"));
-                String taskText = cursor.getString(cursor.getColumnIndex("taskText"));
-                long deadlineTime = cursor.getLong(cursor.getColumnIndex("deadlineTime"));
-                int taskImportance = cursor.getInt(cursor.getColumnIndex("taskImportance"));
-                Task task = new Task(taskID, taskName, taskText, deadlineTime, taskImportance);
-                taskList.add(task);
+                taskList.add(getTaskFromCursor(cursor));
                 Log.d("read", "size = " + taskList.size());
             } while (cursor.moveToNext());
         } // else 0件
@@ -74,14 +62,29 @@ public class TaskDatabase {
     void delete(Task task) {
         // アーカイブ時の処理
         database = taskHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("taskID", task.getTaskID());
-        contentValues.put("taskName", task.getName());
-        contentValues.put("taskText", task.getText());
-        contentValues.put("deadlineTime", task.getDeadlineTime().getTimeInMillis());
-        contentValues.put("taskImportance", task.getTaskImportance());
+        ContentValues contentValues = getContentValues(task.getName(), task.getText(), task.getDeadlineTime().getTimeInMillis(), task.getTaskImportance());
         database.insert(ARCHIVE_TASK_TABLE, null, contentValues);
         database.delete(ACTIVE_TASK_TABLE, "TaskID=?", new String[]{String.valueOf(task.getTaskID())});
+        database.close();
+    }
+
+    Task getTaskByID(int taskID) {
+        database = taskHelper.getReadableDatabase();
+        Cursor cursor = database.query(ACTIVE_TASK_TABLE, null, "taskID=?", new String[]{String.valueOf(taskID)}, null, null, null);
+        if (!cursor.moveToFirst()) {
+            Log.d("getTaskByID", "error");
+        }
+        Task task = getTaskFromCursor(cursor);
+        cursor.close();
+        database.close();
+        return task;
+    }
+
+    void replace(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance) {
+        database = taskHelper.getWritableDatabase();
+        ContentValues contentValues = getContentValues(taskName, taskText, deadlineTime, taskImportance);
+        contentValues.put("taskID", taskID);
+        database.replace(ACTIVE_TASK_TABLE, null, contentValues);
         database.close();
     }
 
@@ -101,12 +104,29 @@ public class TaskDatabase {
                     + "taskImportance INTEGER NOT NULL );";
             Log.d("onCreate", createTable);
             database.execSQL("CREATE TABLE " + ACTIVE_TASK_TABLE + createTable);
-            database.execSQL("CREATE TABLE " + ARCHIVE_TASK_TABLE + createTable);
+            //database.execSQL("CREATE TABLE " + ARCHIVE_TASK_TABLE + createTable);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase taskDatabase, int oldVersion, int newVersion) {
             // do nothing
         }
+    }
+
+    private ContentValues getContentValues(String taskName, String taskText, long deadlineTime, int taskImportance) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("taskName", taskName);
+        contentValues.put("taskText", taskText);
+        contentValues.put("deadlineTime", deadlineTime);
+        contentValues.put("taskImportance", taskImportance);
+        return contentValues;
+    }
+    private Task getTaskFromCursor(Cursor cursor) {
+        int taskID = cursor.getInt(cursor.getColumnIndex("taskID"));
+        String taskName = cursor.getString(cursor.getColumnIndex("taskName"));
+        String taskText = cursor.getString(cursor.getColumnIndex("taskText"));
+        long deadlineTime = cursor.getLong(cursor.getColumnIndex("deadlineTime"));
+        int taskImportance = cursor.getInt(cursor.getColumnIndex("taskImportance"));
+        return new Task(taskID, taskName, taskText, deadlineTime, taskImportance);
     }
 }
