@@ -74,7 +74,10 @@ public class TaskDatabase {
         if (!cursor.moveToFirst()) {
             Log.d("getTaskByID", "error");
         }
-        return getTaskFromCursor(cursor);
+        Task task = getTaskFromCursor(cursor);
+        cursor.close();
+        database.close();
+        return task;
     }
 
     void replace(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance) {
@@ -82,6 +85,7 @@ public class TaskDatabase {
         ContentValues contentValues = getContentValues(taskName, taskText, deadlineTime, taskImportance);
         contentValues.put("taskID", taskID);
         database.insert(ACTIVE_TASK_TABLE, null, contentValues);
+        database.close();
     }
 
     /* Helper (内部クラス) */
