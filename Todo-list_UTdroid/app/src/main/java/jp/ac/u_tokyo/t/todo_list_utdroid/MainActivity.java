@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == 0 && resultCode == RESULT_OK) {
             listView.setAdapter(new TaskAdapter(this, new TaskDatabase(this).read()));
+        } else if (requestCode == 0 && resultCode == RESULT_CANCELED) {
+            //今作った新規のTaskをdeleteする（こいつがないとcanselするたびに中身が空のTaskがたくさん生まれてしまう）
         }
+
     }
 }

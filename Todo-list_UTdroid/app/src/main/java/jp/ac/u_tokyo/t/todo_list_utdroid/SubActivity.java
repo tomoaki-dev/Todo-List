@@ -44,10 +44,11 @@ public class SubActivity extends AppCompatActivity {
     GregorianCalendar calendar1 = new GregorianCalendar();//日付取得用
     Calendar calendar2 = Calendar.getInstance();//時刻取得用
     int year, month, day, hour, minute;
-    float ImportanceRatio;
-    public String Importance;
+    float importanceRatio;
+    public String importance;
     long deadlineTime = 0;
     Intent intent;
+    int taskID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,64 @@ public class SubActivity extends AppCompatActivity {
 
             }
         };
+
+
+        //RatingBar(重要度)の設定
+        final RatingBar rb =(RatingBar)findViewById(ratingBar);
+        rb.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingbar, float rating, boolean fromUser) {
+                importanceRatio = ratingbar.getRating();
+
+            }
+        });
+
+        //RatiingBarのリセットボタンの設定
+        Button btn = (Button)findViewById(starReset);
+        btn.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                importanceRatio = 0;
+                rb.setRating(0);
+            }
+        });
+
+
+        /* Intentの読み込み */
+        intent = getIntent();
+        if (intent != null) {
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                taskID = extras.getInt("id");
+                //今はトースト焼いてる
+                Toast.makeText(SubActivity.this,"called id is " + taskID,Toast.LENGTH_LONG).show();
+
+                /**  ここでTaskの中身を受け取ってそれぞれの変数に値を代入する
+                editTaskName = ;
+                editTaskText = ;
+                importanceRatio = ;
+                rb.setRating(importanceRatio);
+                calendar1.set(year.);
+                calendar1.set(month, );
+                calender1.set(day, );
+                calender2.set(hour,);
+                calender2.set(minute, );
+                 */
+                
+
+
+
+
+
+
+            }
+        }
+
+
+
+
+
+
 
         s1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
@@ -158,38 +217,10 @@ public class SubActivity extends AppCompatActivity {
         });
 
 
-        final RatingBar rb =(RatingBar)findViewById(ratingBar);
-        rb.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingbar, float rating, boolean fromUser) {
-                ImportanceRatio = ratingbar.getRating();
-
-            }
-        });
-
-        Button btn = (Button)findViewById(starReset);
-        btn.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                ImportanceRatio = 0;
-                rb.setRating(0);
-            }
-        });
 
 
 
-        /* Intentの読み込み */
-        intent = getIntent();
-        if (intent != null) {
-            Bundle extras = intent.getExtras();
-            if (extras != null) {
-                /* Intentに添付されたデータを取り出す */
-                //MyData myData = extras.getParcelable(MainActivity.INTENT_KEY_RESULT);
 
-                /* 内容を画面に表示 */
-                //editTaskText.setText(myData.getMessage());
-            }
-        }
 
 
         findViewById(R.id.buttonOK).setOnClickListener(new View.OnClickListener() {
@@ -205,25 +236,21 @@ public class SubActivity extends AppCompatActivity {
                 hour = calendar2.get(Calendar.HOUR_OF_DAY); // 時
                 minute = calendar2.get(Calendar.MINUTE); // 分
 
-                if(ImportanceRatio==1.0){
-                    Importance = "Low";
-                }else if(ImportanceRatio==2.0){
-                    Importance = "Middle";
-                }else if(ImportanceRatio==3.0){
-                    Importance = "High";
+                if(importanceRatio==1.0){
+                    importance = "Low";
+                }else if(importanceRatio==2.0){
+                    importance = "Middle";
+                }else if(importanceRatio==3.0){
+                    importance = "High";
                 };
 
-/*                Toast.makeText(
-                        SubActivity.this,
-                         "{ "+name +" } "+"{ "+text+" }" + "  "+  DateFormat.format("yyyy/MM/dd",calendar1) + " "+ DateFormat.format("kk:mm",calendar2) + " Importance: " + Importance, Toast.LENGTH_LONG)
-                        .show();
-*/
+
                 if (deadlineTime != 0) {
                     deadlineTime = new GregorianCalendar(year, month, day, hour, minute).getTimeInMillis();
                 }
                 Log.d("add", "deadline = " + deadlineTime);
                 TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
-                taskDatabase.add(name, text, deadlineTime, (int) ImportanceRatio);
+                taskDatabase.add(name, text, deadlineTime, (int) importanceRatio);
 
                 /* 処理結果を設定 */
                 setResult(RESULT_OK, intent);
