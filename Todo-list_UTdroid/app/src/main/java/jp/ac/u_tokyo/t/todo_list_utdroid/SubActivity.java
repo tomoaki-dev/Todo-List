@@ -26,6 +26,7 @@ import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.date_view;
+import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.deadlineTime;
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.ratingBar;
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.starReset;
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.switch1;
@@ -62,6 +63,10 @@ public class SubActivity extends AppCompatActivity {
         final TextView timeView = (TextView)findViewById(time_view);
 
         Switch s1 = (Switch) findViewById(R.id.switch1);
+
+        final Button buttonOK = (Button)findViewById(R.id.buttonOK);
+        Button buttonCancel = (Button)findViewById(R.id.buttonCancel);
+
 
         dateView.setVisibility(View.GONE);
         timeView.setVisibility(View.GONE);
@@ -115,7 +120,7 @@ public class SubActivity extends AppCompatActivity {
             }
         });
 
-        //RatiingBarのリセットボタンの設定
+        //RatingBarのリセットボタンの設定
         Button btn = (Button)findViewById(starReset);
         btn.setOnClickListener(new Button.OnClickListener(){
             @Override
@@ -145,8 +150,13 @@ public class SubActivity extends AppCompatActivity {
                 calender1.set(day, );
                 calender2.set(hour,);
                 calender2.set(minute, );
+
+
                  */
-                
+                 if(deadlineTime!=0){
+                     s1.setChecked(true);
+                 }
+
 
 
 
@@ -165,7 +175,7 @@ public class SubActivity extends AppCompatActivity {
         s1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
+                if (isChecked==true) {
                     //ボタンを押すと日付・時刻の表示欄が表示される
                     dateView.setVisibility(View.VISIBLE);
                     timeView.setVisibility(View.VISIBLE);
@@ -221,12 +231,9 @@ public class SubActivity extends AppCompatActivity {
 
 
 
-
-
-        findViewById(R.id.buttonOK).setOnClickListener(new View.OnClickListener() {
+        buttonOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent();
                 /* 入力を反映 */
                 String name = editTaskName.getText().toString();
                 String text = editTaskText.getText().toString();
@@ -244,26 +251,40 @@ public class SubActivity extends AppCompatActivity {
                     importance = "High";
                 };
 
+                if(name.isEmpty()){
+                    Toast.makeText(SubActivity.this,"名前を入力してください",Toast.LENGTH_LONG).show();
 
-                if (deadlineTime != 0) {
-                    deadlineTime = new GregorianCalendar(year, month, day, hour, minute).getTimeInMillis();
-                }
-                Log.d("add", "deadline = " + deadlineTime);
-                TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
-                taskDatabase.add(name, text, deadlineTime, (int) importanceRatio);
+                }else{
+                    intent = new Intent();
+
+                    if (deadlineTime != 0) {
+                        deadlineTime = new GregorianCalendar(year, month, day, hour, minute).getTimeInMillis();
+                    }
+                    Log.d("add", "deadline = " + deadlineTime);
+
+
+                    TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+                    taskDatabase.add(name, text, deadlineTime, (int) importanceRatio);
+
+
 
                 /* 処理結果を設定 */
-                setResult(RESULT_OK, intent);
-
-                /* この画面を終了 */
-                finish();
+                    setResult(RESULT_OK, intent);
 
                 /* アニメーションを付与 */
-                overridePendingTransition(R.anim.open_fade_in, R.anim.close_fade_out);
+                    overridePendingTransition(R.anim.open_fade_in, R.anim.close_fade_out);
+
+                /* この画面を終了 */
+                    finish();
+                }
+
+
+
+
             }
         });
 
-        findViewById(R.id.buttonCancel).setOnClickListener(new View.OnClickListener() {
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 intent = new Intent();
@@ -273,11 +294,11 @@ public class SubActivity extends AppCompatActivity {
                 /* 処理結果を設定 */
                 setResult(RESULT_CANCELED, intent);
 
-                /* この画面を終了 */
-                finish();
-
                 /* アニメーションを付与 */
                 overridePendingTransition(R.anim.open_fade_in, R.anim.close_fade_out);
+
+                /* この画面を終了 */
+                finish();
             }
         });
     }
