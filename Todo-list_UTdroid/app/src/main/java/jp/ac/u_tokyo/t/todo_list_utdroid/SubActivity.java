@@ -49,7 +49,7 @@ public class SubActivity extends AppCompatActivity {
     public String importance;
     long deadlineTime = 0;
     Intent intent;
-    int taskID;
+    int taskID = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,7 @@ public class SubActivity extends AppCompatActivity {
 
 
         //日付取得用リスナ作成
-        final DatePickerDialog.OnDateSetListener DateSetListener = new DatePickerDialog.OnDateSetListener() {
+        final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(android.widget.DatePicker datePicker, int year,
                                   int month, int day) {
@@ -96,7 +96,7 @@ public class SubActivity extends AppCompatActivity {
         };
 
         //時刻取得用リスナ作成
-        final TimePickerDialog.OnTimeSetListener TimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+        final TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(android.widget.TimePicker timePicker,
                                   int hour, int minute) {
@@ -140,82 +140,29 @@ public class SubActivity extends AppCompatActivity {
                 //今はトースト焼いてる
                 Toast.makeText(SubActivity.this,"called id is " + taskID,Toast.LENGTH_SHORT).show();
 
-                /**  ここでTaskの中身を受け取ってそれぞれの変数に値を代入する
-                editTaskName = ;
-                editTaskText = ;
-                importanceRatio = ;
+                TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+                Task task = taskDatabase.getTaskByID(taskID);
+                /* ここでTaskの中身を受け取ってそれぞれの変数に値を代入する */
+                editTaskName.setText(task.getName());
+                editTaskText.setText(task.getText());
+                importanceRatio = task.getTaskImportance();
                 rb.setRating(importanceRatio);
-                calendar1.set(year.);
-                calendar1.set(month, );
-                calender1.set(day, );
-                calender2.set(hour,);
-                calender2.set(minute, );
 
-
-                 */
-                 if(deadlineTime!=0){
-                     s1.setChecked(true);
-                 }
-
-
-
-
-
-
-
+                if(task.getDeadlineTime().getTimeInMillis() != 0){
+                    s1.setChecked(true);
+                    deadlineTime = 1;
+                    calendar1 = (GregorianCalendar) task.getDeadlineTime();
+                    calendar2 = task.getDeadlineTime();
+                    setTime(dateView, timeView, dateSetListener, timeSetListener);
+                }
             }
         }
-
-
-
-
-
-
 
         s1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked==true) {
-                    //ボタンを押すと日付・時刻の表示欄が表示される
-                    dateView.setVisibility(View.VISIBLE);
-                    timeView.setVisibility(View.VISIBLE);
-
-                    dateView.setText(DateFormat.format("yyyy/MM/dd",calendar1));
-                    timeView.setText(DateFormat.format("kk:mm",calendar2));
-
-                    dateView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            year = calendar1.get(Calendar.YEAR); // 年
-                            month = calendar1.get(Calendar.MONTH); // 月
-                            day = calendar1.get(Calendar.DAY_OF_MONTH); // 日
-
-                            // 日付設定ダイアログの作成・リスナの登録
-                            final DatePickerDialog datePickerDialog = new DatePickerDialog(SubActivity.this,
-                                    android.R.style.Theme_Holo_Dialog, DateSetListener, year, month, day);
-
-                            // 日付設定ダイアログの表示
-                            datePickerDialog.show();
-
-                        }
-                    });
-
-                    timeView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            hour = calendar2.get(Calendar.HOUR_OF_DAY); // 時
-                            minute = calendar2.get(Calendar.MINUTE); // 分
-
-                            // 時刻設定ダイアログの作成・リスナの登録
-                            final TimePickerDialog timePickerDialog = new TimePickerDialog(SubActivity.this,
-                                    android.R.style.Theme_Holo_Dialog, TimeSetListener,hour,minute,true);
-
-                            // 時刻設定ダイアログの表示
-                            timePickerDialog.show();
-
-                        }
-                    });
-                    deadlineTime = 1;
+                if (isChecked) {
+                    setTime(dateView, timeView, dateSetListener, timeSetListener);
                 }else{
                     dateView.setVisibility(View.GONE);
                     timeView.setVisibility(View.GONE);
@@ -264,7 +211,11 @@ public class SubActivity extends AppCompatActivity {
 
 
                     TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
-                    taskDatabase.add(name, text, deadlineTime, (int) importanceRatio);
+                    if (taskID == -1) {
+                        taskDatabase.add(name, text, deadlineTime, (int) importanceRatio);
+                    } else {
+                        taskDatabase.replace(taskID, name, text, deadlineTime ,(int) importanceRatio);
+                    }
 
 
 
@@ -301,6 +252,48 @@ public class SubActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void setTime(TextView dateView, TextView timeView, final DatePickerDialog.OnDateSetListener dateSetListener, final TimePickerDialog.OnTimeSetListener timeSetListener) {
+        dateView.setVisibility(View.VISIBLE);
+        timeView.setVisibility(View.VISIBLE);
+
+        dateView.setText(DateFormat.format("yyyy/MM/dd",calendar1));
+        timeView.setText(DateFormat.format("kk:mm",calendar2));
+
+        dateView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                year = calendar1.get(Calendar.YEAR); // 年
+                month = calendar1.get(Calendar.MONTH); // 月
+                day = calendar1.get(Calendar.DAY_OF_MONTH); // 日
+
+                // 日付設定ダイアログの作成・リスナの登録
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(SubActivity.this,
+                        android.R.style.Theme_Holo_Dialog, dateSetListener, year, month, day);
+
+                // 日付設定ダイアログの表示
+                datePickerDialog.show();
+
+            }
+        });
+
+        timeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hour = calendar2.get(Calendar.HOUR_OF_DAY); // 時
+                minute = calendar2.get(Calendar.MINUTE); // 分
+
+                // 時刻設定ダイアログの作成・リスナの登録
+                final TimePickerDialog timePickerDialog = new TimePickerDialog(SubActivity.this,
+                        android.R.style.Theme_Holo_Dialog, timeSetListener,hour,minute,true);
+
+                // 時刻設定ダイアログの表示
+                timePickerDialog.show();
+
+            }
+        });
+        deadlineTime = 1;
     }
 
 }

@@ -84,7 +84,7 @@ public class TaskDatabase {
         database = taskHelper.getWritableDatabase();
         ContentValues contentValues = getContentValues(taskName, taskText, deadlineTime, taskImportance);
         contentValues.put("taskID", taskID);
-        database.insert(ACTIVE_TASK_TABLE, null, contentValues);
+        database.replace(ACTIVE_TASK_TABLE, null, contentValues);
         database.close();
     }
 
@@ -104,7 +104,7 @@ public class TaskDatabase {
                     + "taskImportance INTEGER NOT NULL );";
             Log.d("onCreate", createTable);
             database.execSQL("CREATE TABLE " + ACTIVE_TASK_TABLE + createTable);
-            database.execSQL("CREATE TABLE " + ARCHIVE_TASK_TABLE + createTable);
+            //database.execSQL("CREATE TABLE " + ARCHIVE_TASK_TABLE + createTable);
         }
 
         @Override
