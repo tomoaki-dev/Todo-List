@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(
                         MainActivity.this,
-                        "longclick Item id:"+ task.getTaskID(), Toast.LENGTH_LONG)
+                        "longclick Item id:"+ task.getTaskID(), Toast.LENGTH_SHORT)
                         .show();
                 return false;
             }

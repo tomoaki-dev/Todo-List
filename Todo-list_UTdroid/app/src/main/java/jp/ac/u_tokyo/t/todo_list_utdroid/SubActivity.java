@@ -138,7 +138,7 @@ public class SubActivity extends AppCompatActivity {
             if (extras != null) {
                 taskID = extras.getInt("id");
                 //今はトースト焼いてる
-                Toast.makeText(SubActivity.this,"called id is " + taskID,Toast.LENGTH_LONG).show();
+                Toast.makeText(SubActivity.this,"called id is " + taskID,Toast.LENGTH_SHORT).show();
 
                 /**  ここでTaskの中身を受け取ってそれぞれの変数に値を代入する
                 editTaskName = ;
@@ -252,7 +252,7 @@ public class SubActivity extends AppCompatActivity {
                 };
 
                 if(name.isEmpty()){
-                    Toast.makeText(SubActivity.this,"名前を入力してください",Toast.LENGTH_LONG).show();
+                    Toast.makeText(SubActivity.this,"名前を入力してください",Toast.LENGTH_SHORT).show();
 
                 }else{
                     intent = new Intent();

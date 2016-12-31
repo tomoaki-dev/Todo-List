@@ -7,14 +7,15 @@
 
 
     <EditText
-        android:text=""
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editTaskName"
         android:layout_weight="0.04"
         android:inputType="text"
         android:hint="@string/task"
+        android:maxLength="20"
         android:layout_margin="10dp"
+        android:background="#00000000"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
     <View
@@ -39,8 +40,11 @@
         android:id="@+id/editTaskText"
         android:layout_weight="0.04"
         android:inputType="text"
+        android:maxLength="100"
+        android:maxLines="5"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:background="#00000000"/>
 
     <View
         android:layout_width="match_parent"
@@ -61,7 +65,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Button" />
 
         <Button
-            android:text="リセット"
+            android:text="@string/reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/starReset"
