@@ -1,17 +1,26 @@
 package jp.ac.u_tokyo.t.todo_list_utdroid;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -37,10 +46,41 @@ public class MainActivity extends AppCompatActivity {
     ListView listView;
     List<Task> taskList;
 
+    DrawerLayout mDrawerLayout;
+    ActionBarDrawerToggle mDrawerToggle;
+
+    ArrayList<String> folderList = new ArrayList<>();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*画面横のドロワー（メニューの設定）*/
+
+        Toolbar mtoolbar = (Toolbar)findViewById(R.id.tool_bar);
+        setSupportActionBar(mtoolbar);
+
+        //ナビゲーションドロワーの設定
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,mtoolbar,R.string.open,R.string.close);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+
+        folderList.add("List");
+
+        setRecyclerView();
+
+        //-----------------------------------------------------------------------------------
+
+        /*画面のコンテンツの設定*/
 
         FloatingActionButton add = (FloatingActionButton) findViewById(R.id.add_button);
         add.setOnClickListener(new View.OnClickListener() {
@@ -52,9 +92,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         listView = (ListView) findViewById(R.id.list_view);
-
-        LinearLayout tabView = (LinearLayout) findViewById(R.id.tab_view);
-        tabView.setVisibility(View.GONE);
 
         //アダプタ作成
         // 表示するデータを設定
@@ -95,10 +132,56 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (/*requestCode == 0 && */resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             listView.setAdapter(new TaskAdapter(this, new TaskDatabase(this).read()));
-//        } else if (requestCode == 0 && resultCode == RESULT_CANCELED) {
-            //今作った新規のTaskをdeleteする（こいつがないとcanselするたびに中身が空のTaskがたくさん生まれてしまう）
         }
     }
+
+    private void setRecyclerView(){
+        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.drawer_view);
+
+        mRecyclerView.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+
+        SimpleDrawerAdapter mAdapter = new SimpleDrawerAdapter(folderList);
+
+        mRecyclerView.setAdapter(mAdapter);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // アクションバー上のボタン選択時のハンドリング
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        // ActionBarDrawerToggleにイベント渡す
+        // 渡さないと、ドロワーボタンを押しても開かない
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // ActionBarDrawerToggleとMainActivityの状態を同期する
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // ActionBarDrawerToggleにイベント渡す
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
 }

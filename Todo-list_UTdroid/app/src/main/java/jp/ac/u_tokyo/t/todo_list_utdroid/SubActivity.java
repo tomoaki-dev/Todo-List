@@ -42,7 +42,7 @@ public class SubActivity extends AppCompatActivity {
     private EditText editTaskName;
     private EditText editTaskText;
 
-    GregorianCalendar calendar1 = new GregorianCalendar();//日付取得用
+    Calendar calendar1 = Calendar.getInstance();//日付取得用
     Calendar calendar2 = Calendar.getInstance();//時刻取得用
     int year, month, day, hour, minute;
     float importanceRatio;
@@ -151,7 +151,7 @@ public class SubActivity extends AppCompatActivity {
                 if(task.getDeadlineTime().getTimeInMillis() != 0){
                     s1.setChecked(true);
                     deadlineTime = 1;
-                    calendar1 = (GregorianCalendar) task.getDeadlineTime();
+                    calendar1 = task.getDeadlineTime();
                     calendar2 = task.getDeadlineTime();
                     setTime(dateView, timeView, dateSetListener, timeSetListener);
                 }
@@ -196,7 +196,7 @@ public class SubActivity extends AppCompatActivity {
                     importance = "Middle";
                 }else if(importanceRatio==3.0){
                     importance = "High";
-                };
+                }
 
                 if(name.isEmpty()){
                     Toast.makeText(SubActivity.this,"名前を入力してください",Toast.LENGTH_SHORT).show();
