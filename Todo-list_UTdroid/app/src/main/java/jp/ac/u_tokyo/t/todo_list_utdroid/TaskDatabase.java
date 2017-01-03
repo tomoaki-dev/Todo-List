@@ -17,41 +17,60 @@ import java.util.List;
 public class TaskDatabase {
     /* 定数 */
     private final static String DATABASE_NAME = "TaskList.db";
-    private final static String ACTIVE_TASK_TABLE = "activeTaskTable";
-    private final static String ARCHIVE_TASK_TABLE = "archiveTaskTable";
+    private final static String TASK_TABLE = "taskTable";
     private final static int DATABASE_VERSION = 1;
 
-    private final static String taskID = "taskID";
-    private final static String taskName = "taskName";
-    private final static String taskText = "taskText";
-    private final static String deadlineTime = "deadlineTime";
-    private final static String isImportant = "taskImportance";
+    /* SQL 列の名前 */
+    private final static String TASK_ID = "taskID";
+    private final static String TASK_NAME = "taskName";
+    private final static String TASK_TEXT = "taskText";
+    private final static String DEADLINE_TIME = "deadlineTime";
+    private final static String TASK_IMPORTANCE = "taskImportance";
 
-    /* 内部に保持 */
+    /* メンバ変数 */
     private SQLiteDatabase database;
     private TaskDatabaseHelper taskHelper;
 
-    public TaskDatabase(Context context) {
+    TaskDatabase(Context context) {
         taskHelper = new TaskDatabaseHelper(context);
     }
 
     /* デーダベースに追加 */
-    public void add(String taskName, String taskText, long deadlineTime, int taskImportance) {
+    void add(String taskName, String taskText, long deadlineTime, int taskImportance) {
         database = taskHelper.getWritableDatabase();
-        database.insert(ACTIVE_TASK_TABLE, null, getContentValues(taskName, taskText, deadlineTime, taskImportance));
+        database.insert(TASK_TABLE, null, getContentValues(taskName, taskText, deadlineTime, taskImportance));
+        database.close();
+    }
+
+    /* IDを指定して追加 */
+    void add(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance) {
+        database = taskHelper.getWritableDatabase();
+        ContentValues contentValues = getContentValues(taskName, taskText, deadlineTime, taskImportance);
+        contentValues.put(TASK_ID, taskID);
+        database.update(TASK_TABLE, contentValues, TASK_ID + "=?", new String[]{String.valueOf(taskID)});
         database.close();
     }
 
     /* 配列に読み込み */
-    public List<Task> read() {
+    List<Task> read() {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
-        Cursor cursor = database.query(ACTIVE_TASK_TABLE, null, null, null, null, null, null);
+        Cursor cursor = database.query(TASK_TABLE, null, null, null, null, null, null);
         /* 一つ目に移動しつつ存在を確認 */
         if (cursor.moveToFirst()) {
+            int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
+            int taskNameColumnNumber = cursor.getColumnIndex(TASK_NAME);
+            int taskTextColumnNumber = cursor.getColumnIndex(TASK_TEXT);
+            int deadlineTimeColumnNumber = cursor.getColumnIndex(DEADLINE_TIME);
+            int taskImportanceColumnNumber = cursor.getColumnIndex(TASK_IMPORTANCE);
+
             do {
-                taskList.add(getTaskFromCursor(cursor));
-                Log.d("read", "size = " + taskList.size());
+                int taskID = cursor.getInt(taskIDColumnNumber);
+                String taskName = cursor.getString(taskNameColumnNumber);
+                String taskText = cursor.getString(taskTextColumnNumber);
+                long deadlineTime = cursor.getLong(deadlineTimeColumnNumber);
+                int taskImportance = cursor.getInt(taskImportanceColumnNumber);
+                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance));
             } while (cursor.moveToNext());
         } // else 0件
         cursor.close();
@@ -60,32 +79,26 @@ public class TaskDatabase {
     }
 
     void delete(Task task) {
-        // アーカイブ時の処理
+        // 一時的な処理
         database = taskHelper.getWritableDatabase();
-        ContentValues contentValues = getContentValues(task.getName(), task.getText(), task.getDeadlineTime().getTimeInMillis(), task.getTaskImportance());
-        database.insert(ARCHIVE_TASK_TABLE, null, contentValues);
-        database.delete(ACTIVE_TASK_TABLE, "TaskID=?", new String[]{String.valueOf(task.getTaskID())});
+        database.delete(TASK_TABLE, TASK_ID + "=?", new String[]{String.valueOf(task.getTaskID())});
         database.close();
     }
 
-    Task getTaskByID(int taskID) {
+    /* IDからタスクを検索 */
+    Task getTaskById(int taskID) {
         database = taskHelper.getReadableDatabase();
-        Cursor cursor = database.query(ACTIVE_TASK_TABLE, null, "taskID=?", new String[]{String.valueOf(taskID)}, null, null, null);
+        Cursor cursor = database.query(TASK_TABLE, null, TASK_ID + "=?", new String[]{String.valueOf(taskID)}, null, null, null);
         if (!cursor.moveToFirst()) {
-            Log.d("getTaskByID", "error");
+            Log.d("getTaskById", "error");
         }
-        Task task = getTaskFromCursor(cursor);
+        String taskName = cursor.getString(cursor.getColumnIndex(TASK_NAME));
+        String taskText = cursor.getString(cursor.getColumnIndex(TASK_TEXT));
+        long deadlineTime = cursor.getLong(cursor.getColumnIndex(DEADLINE_TIME));
+        int taskImportance = cursor.getInt(cursor.getColumnIndex(TASK_IMPORTANCE));
         cursor.close();
         database.close();
-        return task;
-    }
-
-    void replace(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance) {
-        database = taskHelper.getWritableDatabase();
-        ContentValues contentValues = getContentValues(taskName, taskText, deadlineTime, taskImportance);
-        contentValues.put("taskID", taskID);
-        database.replace(ACTIVE_TASK_TABLE, null, contentValues);
-        database.close();
+        return new Task(taskID, taskName, taskText, deadlineTime, taskImportance);
     }
 
     /* Helper (内部クラス) */
@@ -96,15 +109,14 @@ public class TaskDatabase {
 
         @Override
         public void onCreate(SQLiteDatabase database) {
-            String createTable = " ( "
-                    + "taskID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "taskName TEXT NOT NULL, "
-                    + "taskText TEXT, "
-                    + "deadlineTime INTEGER NOT NULL, "
-                    + "taskImportance INTEGER NOT NULL );";
-            Log.d("onCreate", createTable);
-            database.execSQL("CREATE TABLE " + ACTIVE_TASK_TABLE + createTable);
-            //database.execSQL("CREATE TABLE " + ARCHIVE_TASK_TABLE + createTable);
+            String createTaskTable = "CREATE TABLE " + TASK_TABLE + " ("
+                    + TASK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + TASK_NAME + " TEXT NOT NULL, "
+                    + TASK_TEXT + " TEXT, "
+                    + DEADLINE_TIME + " INTEGER NOT NULL, "
+                    + TASK_IMPORTANCE + " INTEGER NOT NULL);";
+            Log.d("onCreate", createTaskTable);
+            database.execSQL(createTaskTable);
         }
 
         @Override
@@ -115,18 +127,10 @@ public class TaskDatabase {
 
     private ContentValues getContentValues(String taskName, String taskText, long deadlineTime, int taskImportance) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put("taskName", taskName);
-        contentValues.put("taskText", taskText);
-        contentValues.put("deadlineTime", deadlineTime);
-        contentValues.put("taskImportance", taskImportance);
+        contentValues.put(TASK_NAME, taskName);
+        contentValues.put(TASK_TEXT, taskText);
+        contentValues.put(DEADLINE_TIME, deadlineTime);
+        contentValues.put(TASK_IMPORTANCE, taskImportance);
         return contentValues;
-    }
-    private Task getTaskFromCursor(Cursor cursor) {
-        int taskID = cursor.getInt(cursor.getColumnIndex("taskID"));
-        String taskName = cursor.getString(cursor.getColumnIndex("taskName"));
-        String taskText = cursor.getString(cursor.getColumnIndex("taskText"));
-        long deadlineTime = cursor.getLong(cursor.getColumnIndex("deadlineTime"));
-        int taskImportance = cursor.getInt(cursor.getColumnIndex("taskImportance"));
-        return new Task(taskID, taskName, taskText, deadlineTime, taskImportance);
     }
 }
