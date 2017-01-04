@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     ActionBarDrawerToggle mDrawerToggle;
 
     ArrayList<String> folderList = new ArrayList<>();
+
+    TextView addFolder;
 
 
 
@@ -128,6 +131,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
+
+        addFolder = (TextView)findViewById(R.id.add_folder);
+        addFolder.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FolderAddActivity.class);
+                startActivityForResult(intent, ADD_TASK);
+            }
+        });
     }
 
     @Override
@@ -183,5 +195,6 @@ public class MainActivity extends AppCompatActivity {
         // ActionBarDrawerToggleにイベント渡す
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
 
 }

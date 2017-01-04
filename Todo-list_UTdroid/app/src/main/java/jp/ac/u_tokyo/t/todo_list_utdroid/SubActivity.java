@@ -8,17 +8,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -66,7 +70,6 @@ public class SubActivity extends AppCompatActivity {
         dateView.setVisibility(View.GONE);
         timeView.setVisibility(View.GONE);
 
-
         //日付取得用リスナ作成
         final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -112,6 +115,17 @@ public class SubActivity extends AppCompatActivity {
                 rb.setRating(0);
             }
         });
+
+
+        //spinnerに表示するfolderの一覧
+        ArrayList<String>  arrayList = new ArrayList<String>();
+        ArrayAdapter folderAdapter = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,arrayList);
+
+        Spinner spinner = (Spinner)findViewById(R.id.spinner);
+        spinner.setAdapter(folderAdapter);
+
+        arrayList.add("List");
+
 
 
         /* Intentの読み込み */
@@ -218,6 +232,28 @@ public class SubActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        //spinnerの初期値の変更（再編集時に元々選択されていたフォルダを表示させる）
+        //folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //spinner.setSelection(1);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int position, long id) {
+                Spinner spinner = (Spinner) parent;
+                // 選択されたアイテムを取得します
+                String folder = (String) spinner.getSelectedItem();
+                Toast.makeText(SubActivity.this, folder, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+
+        });
+        //この後で、選択したフォルダの名前からFolderIDを決定する
+
 
 
 
