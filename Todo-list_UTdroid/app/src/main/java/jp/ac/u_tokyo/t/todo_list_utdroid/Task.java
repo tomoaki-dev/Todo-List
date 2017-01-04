@@ -16,19 +16,21 @@ public class Task {
     private Calendar deadlineTime;
     /* 0 - 3 */
     private int taskImportance;
+    private int folderID;
 
     /* コンストラクタ(set) */
 /*    public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, int taskImportance) {
         this.set(taskName, taskText, year, month, day, hour, minute, taskImportance);
     }*/
     // for Database
-    public Task(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance) {
+    public Task(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance, int folderID) {
         this.taskID = taskID;
         this.taskName = taskName;
         this.taskText = taskText;
         this.deadlineTime = new GregorianCalendar();
         this.deadlineTime.setTimeInMillis(deadlineTime);
         this.taskImportance = taskImportance;
+        this.folderID = folderID;
     }
 
 /*    private void set(String taskName, String taskText, int year, int month, int day, int hour, int minute, int taskImportance) {
@@ -53,5 +55,8 @@ public class Task {
     }
     public int getTaskImportance() {
         return taskImportance;
+    }
+    public int getFolderID() {
+        return folderID;
     }
 }

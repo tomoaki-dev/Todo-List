@@ -42,6 +42,8 @@ public class SubActivity extends AppCompatActivity {
     long deadlineTime = 0;
     Intent intent;
     int taskID = -1;
+    // あとで修正
+    int folderID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,9 +241,9 @@ public class SubActivity extends AppCompatActivity {
 
                     TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
                     if (taskID == -1) {
-                        taskDatabase.add(name, text, deadlineTime, (int) importanceRatio);
+                        taskDatabase.add(name, text, deadlineTime, (int) importanceRatio, folderID);
                     } else {
-                        taskDatabase.add(taskID, name, text, deadlineTime ,(int) importanceRatio);
+                        taskDatabase.add(taskID, name, text, deadlineTime ,(int) importanceRatio, folderID);
                     }
 
                 /* 処理結果を設定 */
