@@ -12,4 +12,5 @@
     <string name="open">open</string>
     <string name="close">close</string>
     <string name="add_folder">+ フォルダを追加</string>
+    <string name="selectFolder">フォルダを選択</string> />
 </resources>

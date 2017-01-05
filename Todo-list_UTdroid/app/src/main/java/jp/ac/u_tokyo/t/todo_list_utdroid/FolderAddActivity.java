@@ -41,14 +41,11 @@ public class FolderAddActivity extends AppCompatActivity {
                 } else {
                     intent = new Intent();
 
-                    /**TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
-                    if (taskID == -1) {
-                        taskDatabase.add(name, text, deadlineTime, (int) importanceRatio, folderID);
-                    } else {
-                        taskDatabase.add(taskID, name, text, deadlineTime ,(int) importanceRatio, folderID);
-                    }*/
+                    TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+                    {
+                        taskDatabase.createNewFolder(name);
+                    }
 
-                    //arrayList.add(name);//こんな感じで追加すればいい？
 
                 /* 処理結果を設定 */
                     setResult(RESULT_OK, intent);

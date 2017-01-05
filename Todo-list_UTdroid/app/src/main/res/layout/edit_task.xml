@@ -16,7 +16,8 @@
         android:maxLength="20"
         android:layout_margin="10dp"
         android:background="#00000000"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="30sp" />
 
     <View
         android:layout_width="match_parent"
@@ -130,7 +131,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
-        android:layout_weight="0.04" />
+        android:layout_weight="0.2"
+        android:prompt="@string/selectFolder"/>
 
     <View
         android:layout_width="match_parent"

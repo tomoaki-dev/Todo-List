@@ -29,8 +29,8 @@ public class SimpleDrawerAdapter extends RecyclerView.Adapter<SimpleDrawerAdapte
     // MainActivityから渡されるデータ
     private ArrayList<String> mDrawerMenuArr;
 
-    public SimpleDrawerAdapter(ArrayList arrayList){
-        mDrawerMenuArr = arrayList;
+    public SimpleDrawerAdapter(ArrayList<String > folderList){
+        mDrawerMenuArr = folderList;
     }
 
     @Override

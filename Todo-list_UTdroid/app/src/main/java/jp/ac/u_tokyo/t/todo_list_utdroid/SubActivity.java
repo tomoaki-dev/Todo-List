@@ -47,12 +47,15 @@ public class SubActivity extends AppCompatActivity {
     Intent intent;
     int taskID = -1;
     // あとで修正
-    int folderID = 0;
+    int folderID;
+    String folderName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_task);
+
+        TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
 
         editTaskName = (EditText) findViewById(R.id.editTaskName);
         editTaskText = (EditText) findViewById(R.id.editTaskText);
@@ -118,14 +121,18 @@ public class SubActivity extends AppCompatActivity {
 
 
         //spinnerに表示するfolderの一覧
-        ArrayList<String>  arrayList = new ArrayList<String>();
-        ArrayAdapter folderAdapter = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,arrayList);
+        ArrayList<String>  folderList = new ArrayList<String>();
+        ArrayAdapter folderAdapter = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,folderList);
+
+        for(Integer folderID : taskDatabase.readFolder().keySet()){
+            folderList.add(taskDatabase.readFolder().get(folderID));
+        }
 
         Spinner spinner = (Spinner)findViewById(R.id.spinner);
         spinner.setAdapter(folderAdapter);
 
-        arrayList.add("List");
-
+        //spinnerの初期値の変更（再編集時に元々選択されていたフォルダを表示させる）
+        spinner.setSelection(0);
 
 
         /* Intentの読み込み */
@@ -137,7 +144,7 @@ public class SubActivity extends AppCompatActivity {
                 //今はトースト焼いてる
                 Toast.makeText(SubActivity.this,"called id is " + taskID,Toast.LENGTH_SHORT).show();
 
-                TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+                //TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
                 Task task = taskDatabase.getTaskById(taskID);
                 /* ここでTaskの中身を受け取ってそれぞれの変数に値を代入する */
                 editTaskName.setText(task.getName());
@@ -234,9 +241,6 @@ public class SubActivity extends AppCompatActivity {
         });
 
 
-        //spinnerの初期値の変更（再編集時に元々選択されていたフォルダを表示させる）
-        //folderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //spinner.setSelection(1);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
@@ -244,15 +248,24 @@ public class SubActivity extends AppCompatActivity {
                                        int position, long id) {
                 Spinner spinner = (Spinner) parent;
                 // 選択されたアイテムを取得します
-                String folder = (String) spinner.getSelectedItem();
-                Toast.makeText(SubActivity.this, folder, Toast.LENGTH_SHORT).show();
+                folderName = (String) spinner.getSelectedItem();
+                Toast.makeText(SubActivity.this, folderName, Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
             }
 
         });
-        //この後で、選択したフォルダの名前からFolderIDを決定する
+
+        //選択したフォルダの名前からFolderIDを決定する
+        for(Integer i : taskDatabase.readFolder().keySet()){
+            String name = taskDatabase.readFolder().get(i);
+            if(name.equals(folderName)){
+            folderID = i;
+            }
+        }
+
+
 
 
 
@@ -291,7 +304,6 @@ public class SubActivity extends AppCompatActivity {
                 /* この画面を終了 */
                     finish();
                 }
-
             }
         });
 
