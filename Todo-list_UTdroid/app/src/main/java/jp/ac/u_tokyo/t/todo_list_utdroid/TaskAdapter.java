@@ -49,7 +49,7 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
             TextView remainDay = (TextView) view.findViewById(R.id.remainDay);
             final CheckBox taskCheckBox = (CheckBox) view.findViewById(R.id.taskCheckBox);
 
-            /* 名前とメッセージを表示 、ここはまだ作ってないTask.javaで扱う*/
+            /* 名前とメッセージを表示 */
             taskName.setText(item.getName());
             if (item.getDeadlineTime().getTimeInMillis() != 0) {
                 deadlineTime.setText(DateFormat.format("yyyy/MM/dd, E, kk:mm", item.getDeadlineTime()));

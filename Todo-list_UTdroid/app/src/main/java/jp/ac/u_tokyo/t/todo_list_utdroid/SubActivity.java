@@ -47,7 +47,7 @@ public class SubActivity extends AppCompatActivity {
     Intent intent;
     int taskID = -1;
     // あとで修正
-    int folderID;
+    int folderID = 0;
     String folderName;
 
     @Override
@@ -131,8 +131,6 @@ public class SubActivity extends AppCompatActivity {
         Spinner spinner = (Spinner)findViewById(R.id.spinner);
         spinner.setAdapter(folderAdapter);
 
-        //spinnerの初期値の変更（再編集時に元々選択されていたフォルダを表示させる）
-        spinner.setSelection(0);
 
 
         /* Intentの読み込み */
@@ -151,6 +149,8 @@ public class SubActivity extends AppCompatActivity {
                 editTaskText.setText(task.getText());
                 importanceRatio = task.getTaskImportance();
                 rb.setRating(importanceRatio);
+
+                folderID = task.getFolderID();
 
                 if(task.getDeadlineTime().getTimeInMillis() != 0){
                     s1.setChecked(true);
@@ -240,7 +240,8 @@ public class SubActivity extends AppCompatActivity {
             }
         });
 
-
+        //spinnerの初期値の変更（再編集時に元々選択されていたフォルダを表示させる）
+        spinner.setSelection(folderID);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override

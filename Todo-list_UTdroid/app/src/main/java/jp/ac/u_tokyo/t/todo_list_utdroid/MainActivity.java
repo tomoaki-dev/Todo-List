@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -158,17 +159,10 @@ public class MainActivity extends AppCompatActivity {
 
     //--------------------------------------------------------------------
     //Drawerの中身
-    private void setRecyclerView(){
-        RecyclerView mRecyclerView = (RecyclerView)findViewById(R.id.drawer_view);
+    private void setFolderView(){
+        ListView mListView = (ListView)findViewById(R.id.drawer_view);
 
-        mRecyclerView.setHasFixedSize(true);
-
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        SimpleDrawerAdapter mAdapter = new SimpleDrawerAdapter(folderList);
-
-        mRecyclerView.setAdapter(mAdapter);
+        mListView.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.cell_folder,folderList));
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -220,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
             folderList.add(folderMap.get(folderID));
         }
 
-        setRecyclerView();
+        setFolderView();
     }
 
 }
