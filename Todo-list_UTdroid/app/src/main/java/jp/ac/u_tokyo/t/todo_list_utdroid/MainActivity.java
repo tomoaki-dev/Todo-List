@@ -56,9 +56,6 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout mDrawerLayout;
     ActionBarDrawerToggle mDrawerToggle;
 
-    ArrayList<String> folderList = new ArrayList<>();
-    Map<Integer,String> folderMap = new LinkedHashMap<>();
-
     TextView addFolder;
 
 
@@ -159,11 +156,6 @@ public class MainActivity extends AppCompatActivity {
 
     //--------------------------------------------------------------------
     //Drawerの中身
-    private void setFolderView(){
-        ListView mListView = (ListView)findViewById(R.id.drawer_view);
-
-        mListView.setAdapter(new ArrayAdapter<String>(getApplicationContext(), R.layout.cell_folder,folderList));
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // アクションバー上のボタン選択時のハンドリング
@@ -203,18 +195,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void roadFolderList(){
         TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
-        folderMap = taskDatabase.readFolder();
+        Map<Integer, String> folderMap = taskDatabase.readFolder();
 
-        if(folderMap==null){
+        if(folderMap.size() == 0){
             taskDatabase.createNewFolder("Default");
+            folderMap = taskDatabase.readFolder();
         }
 
-        folderList.clear();
-        for(Integer folderID : folderMap.keySet()){
-            folderList.add(folderMap.get(folderID));
-        }
+        List<String> folderList = new ArrayList<>(folderMap.values());
 
-        setFolderView();
+        ListView mListView = (ListView)findViewById(R.id.drawer_view);
+        mListView.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.cell_folder, folderList));
     }
 
 }
