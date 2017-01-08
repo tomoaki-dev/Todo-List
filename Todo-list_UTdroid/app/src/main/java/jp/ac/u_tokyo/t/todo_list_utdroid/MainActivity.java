@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         roadFolderList();
 
 
+
+
         //-----------------------------------------------------------------------------------
 
         /*画面のコンテンツの設定*/
@@ -194,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
     //-------------------------------------------
 
     private void roadFolderList(){
-        TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+        final  TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
         Map<Integer, String> folderMap = taskDatabase.readFolder();
 
         if(folderMap.size() == 0){
@@ -206,6 +208,15 @@ public class MainActivity extends AppCompatActivity {
 
         ListView mListView = (ListView)findViewById(R.id.drawer_view);
         mListView.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.cell_folder, folderList));
+
+        mListView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                taskList = taskDatabase.read();
+                listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
+            }
+        });
     }
 
 }

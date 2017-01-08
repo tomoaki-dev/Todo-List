@@ -47,7 +47,7 @@ public class SubActivity extends AppCompatActivity {
     Intent intent;
     int taskID = -1;
     // あとで修正
-    int folderID = 0;
+    int folderID;
     String folderName;
 
     @Override
