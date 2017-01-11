@@ -84,6 +84,35 @@ public class TaskDatabase {
         return taskList;
     }
 
+    /*フォルダごとに配列に読み込み*/
+    List<Task> readbyfolder(int folderID) {
+        database = taskHelper.getReadableDatabase();
+        List<Task> taskList = new ArrayList<>();
+        Cursor cursor = database.query(TASK_TABLE,null, FOLDER_ID  + "=?", new String[]{String.valueOf(folderID)}, null, null, null);
+        /* 一つ目に移動しつつ存在を確認 */
+        if (cursor.moveToFirst()) {
+            int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
+            int taskNameColumnNumber = cursor.getColumnIndex(TASK_NAME);
+            int taskTextColumnNumber = cursor.getColumnIndex(TASK_TEXT);
+            int deadlineTimeColumnNumber = cursor.getColumnIndex(DEADLINE_TIME);
+            int taskImportanceColumnNumber = cursor.getColumnIndex(TASK_IMPORTANCE);
+            //int folderIDColumnNumber = cursor.getColumnIndex(FOLDER_ID);
+
+            do {
+                int taskID = cursor.getInt(taskIDColumnNumber);
+                String taskName = cursor.getString(taskNameColumnNumber);
+                String taskText = cursor.getString(taskTextColumnNumber);
+                long deadlineTime = cursor.getLong(deadlineTimeColumnNumber);
+                int taskImportance = cursor.getInt(taskImportanceColumnNumber);
+                //int folderID = cursor.getInt(folderIDColumnNumber);
+                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderID));
+            } while (cursor.moveToNext());
+        } // else 0件
+        cursor.close();
+        database.close();
+        return taskList;
+    }
+
     void delete(Task task) {
         // 一時的な処理
         database = taskHelper.getWritableDatabase();
@@ -130,6 +159,22 @@ public class TaskDatabase {
         cursor.close();
         database.close();
         return folderList;
+    }
+
+    Map<String, Integer> readFolderID() {
+        Map<String, Integer> folderIDList = new LinkedHashMap<>();
+        database = taskHelper.getReadableDatabase();
+        Cursor cursor = database.query(FOLDER_TABLE, null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            int folderIDColumn = cursor.getColumnIndex(FOLDER_ID);
+            int folderNameColumn = cursor.getColumnIndex(FOLDER_NAME);
+            do {
+                folderIDList.put(cursor.getString(folderNameColumn),cursor.getInt(folderIDColumn));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+        return folderIDList;
     }
 
     /* Helper (内部クラス) */

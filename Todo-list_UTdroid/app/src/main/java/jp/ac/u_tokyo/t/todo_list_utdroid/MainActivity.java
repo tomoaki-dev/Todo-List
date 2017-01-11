@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     ActionBarDrawerToggle mDrawerToggle;
 
     TextView addFolder;
+    TextView showAll;
 
 
 
@@ -102,13 +103,13 @@ public class MainActivity extends AppCompatActivity {
 
         //アダプタ作成
         // 表示するデータを設定
-        TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+        final TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
         taskList = taskDatabase.read();
         if (taskList.size() == 0) {
             for (int i = 0; i < 5; i++) {
                 int d = i % 12 + 1;
                 long time = new GregorianCalendar(2017, d, d, d, d).getTimeInMillis();
-                taskDatabase.add("Task " + i, "Task", time, 0, 0);
+                taskDatabase.add("Task " + i, "Task", time, 0, 1);
             }
             taskList = taskDatabase.read();
         }
@@ -146,6 +147,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 0);
             }
         });
+
+        showAll = (TextView)findViewById(R.id.show_all);
+        showAll.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                taskList = taskDatabase.read();
+                listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
+            }
+        });
+
     }
 
     @Override
@@ -209,11 +220,11 @@ public class MainActivity extends AppCompatActivity {
         ListView mListView = (ListView)findViewById(R.id.drawer_view);
         mListView.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.cell_folder, folderList));
 
-        mListView.setOnClickListener(new View.OnClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                int id = v.getId();
-                taskList = taskDatabase.read();
+            public void onItemClick(AdapterView<?>parent, View v, int position,long id) {
+                int folderID = (int)id;
+                taskList = taskDatabase.readbyfolder(folderID);
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
             }
         });

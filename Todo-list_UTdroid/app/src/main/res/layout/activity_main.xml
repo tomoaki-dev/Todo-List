@@ -59,6 +59,25 @@
            android:orientation="vertical"
            android:layout_gravity="start">
 
+           <TextView
+               android:text="MENU"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/textView3"
+               android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+               android:background="@android:color/holo_blue_light"
+               android:textAlignment="center"
+               android:textColor="@color/colorPrimaryDark" />
+
+           <TextView
+               android:text="全て表示"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/show_all"
+               android:textAppearance="@style/TextAppearance.AppCompat.Large"
+               android:textAlignment="center"
+               android:background="#fff" />
+
            <ListView
                android:id="@+id/drawer_view"
                android:scrollbars="horizontal"
@@ -69,14 +88,24 @@
                android:layout_weight="15"/>
 
            <TextView
+               android:text="実行済みのタスク"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/textView4"
+               android:background="#fff"
+               android:textAppearance="@style/TextAppearance.AppCompat.Large"
+               android:textAlignment="center" />
+
+           <TextView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:id="@+id/add_folder"
                android:text="@string/add_folder"
                android:background="#fff"
+               android:layout_weight="0.5"
+               android:textAppearance="@style/TextAppearance.AppCompat.Large"
                android:textAlignment="center"
-               android:textSize="24sp"
-               android:layout_weight="0.5" />
+               android:textSize="24sp" />
 
 
 

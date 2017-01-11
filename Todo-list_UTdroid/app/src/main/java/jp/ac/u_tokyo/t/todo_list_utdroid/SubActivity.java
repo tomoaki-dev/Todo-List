@@ -55,7 +55,7 @@ public class SubActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_task);
 
-        TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+        final TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
 
         editTaskName = (EditText) findViewById(R.id.editTaskName);
         editTaskText = (EditText) findViewById(R.id.editTaskText);
@@ -131,6 +131,8 @@ public class SubActivity extends AppCompatActivity {
         Spinner spinner = (Spinner)findViewById(R.id.spinner);
         spinner.setAdapter(folderAdapter);
 
+        folderID = 0;
+
 
 
         /* Intentの読み込み */
@@ -139,8 +141,6 @@ public class SubActivity extends AppCompatActivity {
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 taskID = extras.getInt("id");
-                //今はトースト焼いてる
-                Toast.makeText(SubActivity.this,"called id is " + taskID,Toast.LENGTH_SHORT).show();
 
                 //TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
                 Task task = taskDatabase.getTaskById(taskID);
@@ -151,6 +151,9 @@ public class SubActivity extends AppCompatActivity {
                 rb.setRating(importanceRatio);
 
                 folderID = task.getFolderID();
+
+                //今はトースト焼いてる
+                Toast.makeText(SubActivity.this,"TaskID: " + taskID + "  FolderID:"+ folderID,Toast.LENGTH_SHORT).show();
 
                 if(task.getDeadlineTime().getTimeInMillis() != 0){
                     s1.setChecked(true);
@@ -189,6 +192,7 @@ public class SubActivity extends AppCompatActivity {
             }
         }
 
+        //日付設定ボタンを押した時の設定
         s1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -250,21 +254,17 @@ public class SubActivity extends AppCompatActivity {
                 Spinner spinner = (Spinner) parent;
                 // 選択されたアイテムを取得します
                 folderName = (String) spinner.getSelectedItem();
-                Toast.makeText(SubActivity.this, folderName, Toast.LENGTH_SHORT).show();
+
+                //選択したフォルダの名前からFolderIDを決定する
+                folderID = taskDatabase.readFolderID().get(folderName);
+
+                Toast.makeText(SubActivity.this, folderName + folderID, Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
             }
 
         });
-
-        //選択したフォルダの名前からFolderIDを決定する
-        for(Integer i : taskDatabase.readFolder().keySet()){
-            String name = taskDatabase.readFolder().get(i);
-            if(name.equals(folderName)){
-            folderID = i;
-            }
-        }
 
 
 
