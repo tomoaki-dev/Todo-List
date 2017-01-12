@@ -29,8 +29,8 @@ public class TaskDatabase {
     private final static String TASK_TEXT = "taskText";
     private final static String DEADLINE_TIME = "deadlineTime";
     private final static String TASK_IMPORTANCE = "taskImportance";
-    private final static String FOLDER_ID = "folderID";
     private final static String FOLDER_NAME = "folderName";
+    private final static String COMPLETE_TIME = "completeTime";
 
     /* メンバ変数 */
     private SQLiteDatabase database;
@@ -41,16 +41,16 @@ public class TaskDatabase {
     }
 
     /* デーダベースに追加 */
-    void add(String taskName, String taskText, long deadlineTime, int taskImportance, int folderID) {
+    void add(String taskName, String taskText, long deadlineTime, int taskImportance, String folderName) {
         database = taskHelper.getWritableDatabase();
-        database.insert(TASK_TABLE, null, getContentValues(taskName, taskText, deadlineTime, taskImportance, folderID));
+        database.insert(TASK_TABLE, null, getContentValues(taskName, taskText, deadlineTime, taskImportance, folderName));
         database.close();
     }
 
     /* IDを指定して追加 */
-    void add(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance, int folderID) {
+    void add(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance, String folderName) {
         database = taskHelper.getWritableDatabase();
-        database.update(TASK_TABLE, getContentValues(taskName, taskText, deadlineTime, taskImportance, folderID),
+        database.update(TASK_TABLE, getContentValues(taskName, taskText, deadlineTime, taskImportance, folderName),
                 TASK_ID + "=?", new String[]{String.valueOf(taskID)});
         database.close();
     }
@@ -59,7 +59,7 @@ public class TaskDatabase {
     List<Task> read() {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
-        Cursor cursor = database.query(TASK_TABLE, null, null, null, null, null, null);
+        Cursor cursor = database.query(TASK_TABLE, null, COMPLETE_TIME + "=0", null, null, null, null);
         /* 一つ目に移動しつつ存在を確認 */
         if (cursor.moveToFirst()) {
             int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
@@ -67,7 +67,7 @@ public class TaskDatabase {
             int taskTextColumnNumber = cursor.getColumnIndex(TASK_TEXT);
             int deadlineTimeColumnNumber = cursor.getColumnIndex(DEADLINE_TIME);
             int taskImportanceColumnNumber = cursor.getColumnIndex(TASK_IMPORTANCE);
-            int folderIDColumnNumber = cursor.getColumnIndex(FOLDER_ID);
+            int folderNameColumnNumber = cursor.getColumnIndex(FOLDER_NAME);
 
             do {
                 int taskID = cursor.getInt(taskIDColumnNumber);
@@ -75,8 +75,8 @@ public class TaskDatabase {
                 String taskText = cursor.getString(taskTextColumnNumber);
                 long deadlineTime = cursor.getLong(deadlineTimeColumnNumber);
                 int taskImportance = cursor.getInt(taskImportanceColumnNumber);
-                int folderID = cursor.getInt(folderIDColumnNumber);
-                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderID));
+                String folderName = cursor.getString(folderNameColumnNumber);
+                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, 0));
             } while (cursor.moveToNext());
         } // else 0件
         cursor.close();
@@ -85,10 +85,10 @@ public class TaskDatabase {
     }
 
     /*フォルダごとに配列に読み込み*/
-    List<Task> readbyfolder(int folderID) {
+    List<Task> readbyfolder(String folderName) {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
-        Cursor cursor = database.query(TASK_TABLE,null, FOLDER_ID  + "=?", new String[]{String.valueOf(folderID)}, null, null, null);
+        Cursor cursor = database.query(TASK_TABLE, null, FOLDER_NAME + "=?", new String[]{folderName}, null, null, null);
         /* 一つ目に移動しつつ存在を確認 */
         if (cursor.moveToFirst()) {
             int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
@@ -96,7 +96,7 @@ public class TaskDatabase {
             int taskTextColumnNumber = cursor.getColumnIndex(TASK_TEXT);
             int deadlineTimeColumnNumber = cursor.getColumnIndex(DEADLINE_TIME);
             int taskImportanceColumnNumber = cursor.getColumnIndex(TASK_IMPORTANCE);
-            //int folderIDColumnNumber = cursor.getColumnIndex(FOLDER_ID);
+            int completeTimeColumnNumber = cursor.getColumnIndex(COMPLETE_TIME);
 
             do {
                 int taskID = cursor.getInt(taskIDColumnNumber);
@@ -104,8 +104,8 @@ public class TaskDatabase {
                 String taskText = cursor.getString(taskTextColumnNumber);
                 long deadlineTime = cursor.getLong(deadlineTimeColumnNumber);
                 int taskImportance = cursor.getInt(taskImportanceColumnNumber);
-                //int folderID = cursor.getInt(folderIDColumnNumber);
-                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderID));
+                long completeTime = cursor.getLong(completeTimeColumnNumber);
+                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, completeTime));
             } while (cursor.moveToNext());
         } // else 0件
         cursor.close();
@@ -116,7 +116,9 @@ public class TaskDatabase {
     void delete(Task task) {
         // 一時的な処理
         database = taskHelper.getWritableDatabase();
-        database.delete(TASK_TABLE, TASK_ID + "=?", new String[]{String.valueOf(task.getTaskID())});
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COMPLETE_TIME, System.currentTimeMillis());
+        database.update(TASK_TABLE, contentValues, TASK_ID + "=?", new String[]{String.valueOf(task.getTaskID())});
         database.close();
     }
 
@@ -131,12 +133,14 @@ public class TaskDatabase {
         String taskText = cursor.getString(cursor.getColumnIndex(TASK_TEXT));
         long deadlineTime = cursor.getLong(cursor.getColumnIndex(DEADLINE_TIME));
         int taskImportance = cursor.getInt(cursor.getColumnIndex(TASK_IMPORTANCE));
-        int folderID = cursor.getInt(cursor.getColumnIndex(FOLDER_ID));
+        String folderName = cursor.getString(cursor.getColumnIndex(FOLDER_NAME));
+        long completeTime = cursor.getLong(cursor.getColumnIndex(COMPLETE_TIME));
         cursor.close();
         database.close();
-        return new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderID);
+        return new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, completeTime);
     }
 
+    /* folder */
     void createNewFolder(String folderName) {
         database = taskHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -145,15 +149,14 @@ public class TaskDatabase {
     }
 
     // 要検討
-    Map<Integer, String> readFolder() {
-        Map<Integer, String> folderList = new LinkedHashMap<>();
+    List<String> readFolder() {
+        List<String> folderList = new ArrayList<>();
         database = taskHelper.getReadableDatabase();
         Cursor cursor = database.query(FOLDER_TABLE, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
-            int folderIDColumn = cursor.getColumnIndex(FOLDER_ID);
             int folderNameColumn = cursor.getColumnIndex(FOLDER_NAME);
             do {
-                folderList.put(cursor.getInt(folderIDColumn), cursor.getString(folderNameColumn));
+                folderList.add(cursor.getString(folderNameColumn));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -161,21 +164,21 @@ public class TaskDatabase {
         return folderList;
     }
 
-    Map<String, Integer> readFolderID() {
-        Map<String, Integer> folderIDList = new LinkedHashMap<>();
+    /*
+    List<String> readFolderID() {
+        List<String> folderList = new ArrayList<>();
         database = taskHelper.getReadableDatabase();
         Cursor cursor = database.query(FOLDER_TABLE, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
-            int folderIDColumn = cursor.getColumnIndex(FOLDER_ID);
             int folderNameColumn = cursor.getColumnIndex(FOLDER_NAME);
             do {
-                folderIDList.put(cursor.getString(folderNameColumn),cursor.getInt(folderIDColumn));
+                folderList.add(cursor.getString(folderNameColumn));
             } while (cursor.moveToNext());
         }
         cursor.close();
         database.close();
-        return folderIDList;
-    }
+        return folderList;
+    } */
 
     /* Helper (内部クラス) */
     private class TaskDatabaseHelper extends SQLiteOpenHelper {
@@ -191,11 +194,11 @@ public class TaskDatabase {
                     + TASK_TEXT + " TEXT, "
                     + DEADLINE_TIME + " INTEGER NOT NULL, "
                     + TASK_IMPORTANCE + " INTEGER NOT NULL, "
-                    + FOLDER_ID + " INTEGER NOT NULL);";
+                    + FOLDER_NAME + " TEXT"
+                    + COMPLETE_TIME + " INTEGER);";
             Log.d("onCreate", createTaskTable);
             database.execSQL(createTaskTable);
             String createFolderTable = "CREATE TABLE " + FOLDER_TABLE + " ("
-                    + FOLDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + FOLDER_NAME + " TEXT NOT NULL);";
             database.execSQL(createFolderTable);
         }
@@ -206,13 +209,14 @@ public class TaskDatabase {
         }
     }
 
-    private ContentValues getContentValues(String taskName, String taskText, long deadlineTime, int taskImportance, int folderID) {
+    private ContentValues getContentValues(String taskName, String taskText, long deadlineTime, int taskImportance, String folderName) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TASK_NAME, taskName);
         contentValues.put(TASK_TEXT, taskText);
         contentValues.put(DEADLINE_TIME, deadlineTime);
         contentValues.put(TASK_IMPORTANCE, taskImportance);
-        contentValues.put(FOLDER_ID, folderID);
+        contentValues.put(FOLDER_NAME, folderName);
+        contentValues.put(COMPLETE_TIME, 0);
         return contentValues;
     }
 }

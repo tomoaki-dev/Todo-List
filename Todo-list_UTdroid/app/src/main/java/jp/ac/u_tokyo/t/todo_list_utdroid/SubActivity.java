@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.date_view;
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.ratingBar;
@@ -46,9 +47,7 @@ public class SubActivity extends AppCompatActivity {
     long deadlineTime = 0;
     Intent intent;
     int taskID = -1;
-    // あとで修正
-    int folderID;
-    String folderName;
+    String folderName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,17 +120,10 @@ public class SubActivity extends AppCompatActivity {
 
 
         //spinnerに表示するfolderの一覧
-        ArrayList<String>  folderList = new ArrayList<String>();
-        ArrayAdapter folderAdapter = new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,folderList);
-
-        for(Integer folderID : taskDatabase.readFolder().keySet()){
-            folderList.add(taskDatabase.readFolder().get(folderID));
-        }
-
+        List<String> folderList = taskDatabase.readFolder();
+        ArrayAdapter folderAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, folderList);
         Spinner spinner = (Spinner)findViewById(R.id.spinner);
         spinner.setAdapter(folderAdapter);
-
-        folderID = 0;
 
 
 
@@ -150,10 +142,10 @@ public class SubActivity extends AppCompatActivity {
                 importanceRatio = task.getTaskImportance();
                 rb.setRating(importanceRatio);
 
-                folderID = task.getFolderID();
+                folderName = task.getFolderName();
 
                 //今はトースト焼いてる
-                Toast.makeText(SubActivity.this,"TaskID: " + taskID + "  FolderID:"+ folderID,Toast.LENGTH_SHORT).show();
+                Toast.makeText(SubActivity.this,"TaskID: " + taskID + "  FolderName:"+ folderName,Toast.LENGTH_SHORT).show();
 
                 if(task.getDeadlineTime().getTimeInMillis() != 0){
                     s1.setChecked(true);
@@ -245,7 +237,18 @@ public class SubActivity extends AppCompatActivity {
         });
 
         //spinnerの初期値の変更（再編集時に元々選択されていたフォルダを表示させる）
-        spinner.setSelection(folderID);
+        int defaultPosition = 0;
+        if (folderName != null) {
+            for (int i = 0; i < folderAdapter.getCount(); i++) {
+                if (folderName.equals(folderAdapter.getItem(i))) {
+                    defaultPosition = i;
+                    break;
+                }
+            }
+            // デバッグ用
+            Toast.makeText(SubActivity.this, "folder error", Toast.LENGTH_SHORT).show();
+        }
+        spinner.setSelection(defaultPosition);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
@@ -255,10 +258,7 @@ public class SubActivity extends AppCompatActivity {
                 // 選択されたアイテムを取得します
                 folderName = (String) spinner.getSelectedItem();
 
-                //選択したフォルダの名前からFolderIDを決定する
-                folderID = taskDatabase.readFolderID().get(folderName);
-
-                Toast.makeText(SubActivity.this, folderName + folderID, Toast.LENGTH_SHORT).show();
+                Toast.makeText(SubActivity.this, folderName, Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -291,9 +291,9 @@ public class SubActivity extends AppCompatActivity {
 
                     TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
                     if (taskID == -1) {
-                        taskDatabase.add(name, text, deadlineTime, (int) importanceRatio, folderID);
+                        taskDatabase.add(name, text, deadlineTime, (int) importanceRatio, folderName);
                     } else {
-                        taskDatabase.add(taskID, name, text, deadlineTime ,(int) importanceRatio, folderID);
+                        taskDatabase.add(taskID, name, text, deadlineTime ,(int) importanceRatio, folderName);
                     }
 
                 /* 処理結果を設定 */

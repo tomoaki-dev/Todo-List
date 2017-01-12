@@ -22,8 +22,8 @@ import java.util.Map;
 public class FolderAdapter extends ArrayAdapter{
     private LayoutInflater inflater;
 
-    ArrayList<String> folderList = new ArrayList<>();
-    Map<Integer,String> folderMap = new LinkedHashMap<>();
+//    List<String> folderList;
+//    Map<Integer,String> folderMap = new LinkedHashMap<>();
 
     public FolderAdapter(Context context) {
         super(context, 0);
@@ -41,26 +41,13 @@ public class FolderAdapter extends ArrayAdapter{
             view = inflater.inflate(R.layout.cell_folder, null);
         }
         /* 表示すべきデータの取得 */
-        TaskDatabase taskDatabase = new TaskDatabase(getContext());
-        folderMap = taskDatabase.readFolder();
-
-        if(folderMap==null){
-            taskDatabase.createNewFolder("Default");
-        }
-
-        folderList.clear();
-        for(Integer folderID : folderMap.keySet()){
-            folderList.add(folderMap.get(folderID));
-        }
-
-        String name = folderList.get(position);
+        String name = (String) this.getItem(position);
 
         /* Viewの取得 */
         TextView folderName = (TextView) view.findViewById(R.id.folder_name);
 
         /* 名前とメッセージを表示 */
         folderName.setText(name);
-
 
         return view;
     }

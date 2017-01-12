@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < 5; i++) {
                 int d = i % 12 + 1;
                 long time = new GregorianCalendar(2017, d, d, d, d).getTimeInMillis();
-                taskDatabase.add("Task " + i, "Task", time, 0, 1);
+                taskDatabase.add("Task " + i, "Task", time, 0, taskDatabase.readFolder().get(0));
             }
             taskList = taskDatabase.read();
         }
@@ -208,14 +208,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void roadFolderList(){
         final  TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
-        Map<Integer, String> folderMap = taskDatabase.readFolder();
+        List<String> folderList = taskDatabase.readFolder();
 
-        if(folderMap.size() == 0){
+        if(folderList.size() == 0){
             taskDatabase.createNewFolder("Default");
-            folderMap = taskDatabase.readFolder();
+            folderList = taskDatabase.readFolder();
         }
-
-        List<String> folderList = new ArrayList<>(folderMap.values());
 
         ListView mListView = (ListView)findViewById(R.id.drawer_view);
         mListView.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.cell_folder, folderList));
@@ -223,8 +221,8 @@ public class MainActivity extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?>parent, View v, int position,long id) {
-                int folderID = (int)id;
-                taskList = taskDatabase.readbyfolder(folderID);
+                String folderName = (String) parent.getItemAtPosition(position);
+                taskList = taskDatabase.readbyfolder(folderName);
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
             }
         });
