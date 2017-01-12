@@ -291,9 +291,9 @@ public class SubActivity extends AppCompatActivity {
 
                     TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
                     if (taskID == -1) {
-                        taskDatabase.add(name, text, deadlineTime, (int) importanceRatio, folderName);
+                        taskDatabase.add(name, text, deadlineTime, (int) importanceRatio, folderName,0);
                     } else {
-                        taskDatabase.add(taskID, name, text, deadlineTime ,(int) importanceRatio, folderName);
+                        taskDatabase.add(taskID, name, text, deadlineTime ,(int) importanceRatio, folderName,0);
                     }
 
                 /* 処理結果を設定 */

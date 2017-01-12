@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < 5; i++) {
                 int d = i % 12 + 1;
                 long time = new GregorianCalendar(2017, d, d, d, d).getTimeInMillis();
-                taskDatabase.add("Task " + i, "Task", time, 0, taskDatabase.readFolder().get(0));
+                taskDatabase.add("Task " + i, "Task", time, 0, taskDatabase.readFolder().get(0),0);
             }
             taskList = taskDatabase.read();
         }
