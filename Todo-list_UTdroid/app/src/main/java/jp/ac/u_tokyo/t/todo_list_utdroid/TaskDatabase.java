@@ -68,6 +68,7 @@ public class TaskDatabase {
             int deadlineTimeColumnNumber = cursor.getColumnIndex(DEADLINE_TIME);
             int taskImportanceColumnNumber = cursor.getColumnIndex(TASK_IMPORTANCE);
             int folderNameColumnNumber = cursor.getColumnIndex(FOLDER_NAME);
+            int completeTimeColumnNumber = cursor.getColumnIndex(COMPLETE_TIME);
 
             do {
                 int taskID = cursor.getInt(taskIDColumnNumber);
@@ -76,7 +77,8 @@ public class TaskDatabase {
                 long deadlineTime = cursor.getLong(deadlineTimeColumnNumber);
                 int taskImportance = cursor.getInt(taskImportanceColumnNumber);
                 String folderName = cursor.getString(folderNameColumnNumber);
-                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, 0));
+                long completeTime = cursor.getLong(completeTimeColumnNumber);
+                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, completeTime));
             } while (cursor.moveToNext());
         } // else 0件
         cursor.close();

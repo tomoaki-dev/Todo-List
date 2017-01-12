@@ -33,6 +33,7 @@ public class Task {
         this.deadlineTime.setTimeInMillis(deadlineTime);
         this.taskImportance = taskImportance;
         this.folderName = folderName;
+        this.completeTime = new GregorianCalendar();
         this.completeTime.setTimeInMillis(completeTime);
     }
 
@@ -62,7 +63,7 @@ public class Task {
     public String getFolderName() {
         return folderName;
     }
-    Calendar getCompleteTime() {
+    public Calendar getCompleteTime() {
         return completeTime;
     }
 }
