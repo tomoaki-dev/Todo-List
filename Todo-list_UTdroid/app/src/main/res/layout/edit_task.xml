@@ -127,6 +127,16 @@
         android:layout_height="1px"
         android:background="@color/colorPrimaryDark"/>
 
+    <TextView
+        android:text="フォルダを選択"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2"
+        android:layout_weight="0.04"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp" />
+
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -13,9 +13,11 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.checkbox;
+import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.never;
 
 /**
  * Created by 智明 on 2016/12/23.
@@ -57,6 +59,12 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
             } else {
                 deadlineTime.setText("いつか");
             }
+
+            if(item.getCompleteTime().getTimeInMillis() == 0){
+                taskCheckBox.setChecked(false);
+            }else{
+                taskCheckBox.setChecked(true);
+            }
             // 画面外でチェックを外す (一時的)
             //taskCheckBox.setChecked(false);
             //taskCheckBox.setTag(position);
@@ -65,14 +73,29 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
             taskCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(v, item.getName() + " removed", Snackbar.LENGTH_LONG).show();
+                    //Snackbar.make(v, item.getName() + " removed", Snackbar.LENGTH_LONG).show();
                     // getAdapter() は参照渡し？
-                    ArrayAdapter<Task> adapter = (ArrayAdapter<Task>) ((ListView) parent).getAdapter();
-                    // 仮
-                    adapter.remove(item);
+                    //ArrayAdapter<Task> adapter = (ArrayAdapter<Task>) ((ListView) parent).getAdapter();
                     TaskDatabase taskDatabase = new TaskDatabase(getContext());
-                    taskDatabase.delete(item);
-                    taskCheckBox.setChecked(false);
+
+                    long completeTime = new GregorianCalendar().getTimeInMillis();
+
+                    if(taskCheckBox.isChecked()) {
+                        Snackbar.make(v, item.getName() + " removed", Snackbar.LENGTH_LONG).show();
+                    }else {
+                        completeTime = 0;
+                        Snackbar.make(v, item.getName() + " restored", Snackbar.LENGTH_LONG).show();
+                    }
+
+                    taskDatabase.add(
+                            item.getTaskID(),
+                            item.getName(),
+                            item.getText(),
+                            item.getDeadlineTime().getTimeInMillis(),
+                            item.getTaskImportance(),
+                            item.getFolderName(),
+                            completeTime);
+
                 }
             });
         }

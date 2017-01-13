@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextView addFolder;
     TextView showAll;
+    TextView showDoneTask;
+    TextView folderNameView;
 
 
 
@@ -137,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        folderNameView = (TextView)findViewById(R.id.folder_name);
 
         //folder追加ボタン
         addFolder = (TextView)findViewById(R.id.add_folder);
@@ -154,6 +157,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 taskList = taskDatabase.read();
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
+                folderNameView.setText("全て表示");
+            }
+        });
+
+        showDoneTask = (TextView)findViewById(R.id.show_done_task);
+        showDoneTask.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                taskList = taskDatabase.readdonetask();
+                listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
+                folderNameView.setText("実行済み");
             }
         });
 
@@ -224,6 +238,8 @@ public class MainActivity extends AppCompatActivity {
                 String folderName = (String) parent.getItemAtPosition(position);
                 taskList = taskDatabase.readbyfolder(folderName);
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
+
+                folderNameView.setText("フォルダ: "+folderName);
             }
         });
     }

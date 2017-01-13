@@ -59,7 +59,7 @@ public class TaskDatabase {
     List<Task> read() {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
-        Cursor cursor = database.query(TASK_TABLE, null, null /*COMPLETE_TIME + "=0"*/, null, null, null, null);
+        Cursor cursor = database.query(TASK_TABLE, null, COMPLETE_TIME + "=0", null, null, null, null);
         /* 一つ目に移動しつつ存在を確認 */
         if (cursor.moveToFirst()) {
             int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
@@ -106,6 +106,36 @@ public class TaskDatabase {
                 String taskText = cursor.getString(taskTextColumnNumber);
                 long deadlineTime = cursor.getLong(deadlineTimeColumnNumber);
                 int taskImportance = cursor.getInt(taskImportanceColumnNumber);
+                long completeTime = cursor.getLong(completeTimeColumnNumber);
+                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, completeTime));
+            } while (cursor.moveToNext());
+        } // else 0件
+        cursor.close();
+        database.close();
+        return taskList;
+    }
+
+    List<Task> readdonetask() {
+        database = taskHelper.getReadableDatabase();
+        List<Task> taskList = new ArrayList<>();
+        Cursor cursor = database.query(TASK_TABLE, null, COMPLETE_TIME + "!=0", null, null, null, null);
+        /* 一つ目に移動しつつ存在を確認 */
+        if (cursor.moveToFirst()) {
+            int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
+            int taskNameColumnNumber = cursor.getColumnIndex(TASK_NAME);
+            int taskTextColumnNumber = cursor.getColumnIndex(TASK_TEXT);
+            int deadlineTimeColumnNumber = cursor.getColumnIndex(DEADLINE_TIME);
+            int taskImportanceColumnNumber = cursor.getColumnIndex(TASK_IMPORTANCE);
+            int folderNameColumnNumber = cursor.getColumnIndex(FOLDER_NAME);
+            int completeTimeColumnNumber = cursor.getColumnIndex(COMPLETE_TIME);
+
+            do {
+                int taskID = cursor.getInt(taskIDColumnNumber);
+                String taskName = cursor.getString(taskNameColumnNumber);
+                String taskText = cursor.getString(taskTextColumnNumber);
+                long deadlineTime = cursor.getLong(deadlineTimeColumnNumber);
+                int taskImportance = cursor.getInt(taskImportanceColumnNumber);
+                String folderName = cursor.getString(folderNameColumnNumber);
                 long completeTime = cursor.getLong(completeTimeColumnNumber);
                 taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, completeTime));
             } while (cursor.moveToNext());
