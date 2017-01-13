@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //全て表示
         showAll = (TextView)findViewById(R.id.show_all);
         showAll.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -158,9 +159,11 @@ public class MainActivity extends AppCompatActivity {
                 taskList = taskDatabase.read();
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
                 folderNameView.setText("全て表示");
+                mDrawerLayout.closeDrawers();
             }
         });
 
+        //実行済み
         showDoneTask = (TextView)findViewById(R.id.show_done_task);
         showDoneTask.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -168,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 taskList = taskDatabase.readdonetask();
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
                 folderNameView.setText("実行済み");
+                mDrawerLayout.closeDrawers();
             }
         });
 
@@ -240,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
 
                 folderNameView.setText("フォルダ: "+folderName);
+                mDrawerLayout.closeDrawers();
             }
         });
     }
