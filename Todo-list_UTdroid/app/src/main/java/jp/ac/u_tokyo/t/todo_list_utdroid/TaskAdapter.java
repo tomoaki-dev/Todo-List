@@ -32,7 +32,7 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
     }
 
 
-    @Override /*ここはチャットアプリをコピペ（変数名は変えている）*/
+    @Override /*ここは教材のチャットアプリを参考にしている*/
     // TODO: ViewHolder
     public View getView(final int position, View convertView, final ViewGroup parent) {
          /* ビューを受け取る */

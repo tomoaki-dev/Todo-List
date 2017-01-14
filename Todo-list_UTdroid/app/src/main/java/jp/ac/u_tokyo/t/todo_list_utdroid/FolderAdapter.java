@@ -8,12 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static android.R.drawable.btn_star_big_on;
 
 /**
  * Created by 智明 on 2016/12/31.
@@ -30,7 +33,7 @@ public class FolderAdapter extends ArrayAdapter{
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    @Override /*ここはチャットアプリをコピペ（変数名は変えている）*/
+    @Override /*ここは教材のチャットアプリを参考にしている*/
     // TODO: ViewHolder
     public View getView(final int position, View convertView, final ViewGroup parent) {
          /* ビューを受け取る */
@@ -45,9 +48,11 @@ public class FolderAdapter extends ArrayAdapter{
 
         /* Viewの取得 */
         TextView folderName = (TextView) view.findViewById(R.id.folder_name);
+        ImageView imageView = (ImageView)view.findViewById(R.id.imageView);
 
         /* 名前とメッセージを表示 */
         folderName.setText(name);
+        imageView.setImageResource(btn_star_big_on);
 
         return view;
     }

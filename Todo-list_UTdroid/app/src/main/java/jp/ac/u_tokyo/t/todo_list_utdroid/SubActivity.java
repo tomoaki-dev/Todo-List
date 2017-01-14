@@ -72,6 +72,12 @@ public class SubActivity extends AppCompatActivity {
         dateView.setVisibility(View.GONE);
         timeView.setVisibility(View.GONE);
 
+
+        //日時設定
+        //参考サイト　http://techbooster.jpn.org/andriod/ui/9757/
+        //http://tech.pjin.jp/blog/2016/02/23/android-%E6%97%A5%E4%BB%98%E3%83%BB%E6%99%82%E5%88%BB%E3%81%AE%E5%85%A5%E5%8A%9B%E3%80%80datepickertimepicker/
+        //http://techbooster.jpn.org/andriod/application/8234/
+
         //日付取得用リスナ作成
         final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -120,6 +126,7 @@ public class SubActivity extends AppCompatActivity {
 
 
         //spinnerに表示するfolderの一覧
+        //参考サイト　http://www.adakoda.com/android/000074.html
         List<String> folderList = taskDatabase.readFolder();
         ArrayAdapter folderAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, folderList);
         Spinner spinner = (Spinner)findViewById(R.id.spinner);
@@ -270,7 +277,7 @@ public class SubActivity extends AppCompatActivity {
 
 
 
-
+        //この辺りは教材のIntentを参考にしている
         buttonOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

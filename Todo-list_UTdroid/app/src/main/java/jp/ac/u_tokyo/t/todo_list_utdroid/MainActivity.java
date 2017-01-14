@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         /*画面横のドロワー（メニューの設定）*/
+        //参考サイト　http://qiita.com/yuto_aka_ike/items/ee7511bd2fee70b4ab49
+        //http://www.riaxdnp.jp/?p=6965　　　http://android.keicode.com/basics/ui-navigation-drawer.php
 
         Toolbar mtoolbar = (Toolbar)findViewById(R.id.tool_bar);
         setSupportActionBar(mtoolbar);
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.list_view);
 
         //アダプタ作成
+        //参考サイト　http://blogs.gine2.jp/taka/archives/2966
         // 表示するデータを設定
         final TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
         taskList = taskDatabase.read();
@@ -168,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //--------------------------------------------------------------------
+    // 参考サイト　http://www.riaxdnp.jp/?p=6965
     //Drawerの中身
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

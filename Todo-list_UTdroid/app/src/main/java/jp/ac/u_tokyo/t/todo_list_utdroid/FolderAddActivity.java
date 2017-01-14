@@ -18,7 +18,7 @@ public class FolderAddActivity extends AppCompatActivity {
 
     Intent intent;
 
-    @Override
+    @Override/*教材のIntentを参考にしている*/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.folder_add);
