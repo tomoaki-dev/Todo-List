@@ -25,8 +25,8 @@ public class FolderAdapter extends ArrayAdapter{
 //    List<String> folderList;
 //    Map<Integer,String> folderMap = new LinkedHashMap<>();
 
-    public FolderAdapter(Context context) {
-        super(context, 0);
+    public FolderAdapter(Context context, List<String> folderList) {
+        super(context, 0, folderList);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 

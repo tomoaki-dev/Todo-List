@@ -87,7 +87,7 @@ public class TaskDatabase {
     }
 
     /*フォルダごとに配列に読み込み*/
-    List<Task> readbyfolder(String folderName) {
+    List<Task> readByFolder(String folderName) {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
         Cursor cursor = database.query(TASK_TABLE, null, FOLDER_NAME + "=?", new String[]{folderName}, null, null, null);
@@ -115,7 +115,7 @@ public class TaskDatabase {
         return taskList;
     }
 
-    List<Task> readdonetask() {
+    List<Task> readDoneTask() {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
         Cursor cursor = database.query(TASK_TABLE, null, COMPLETE_TIME + "!=0", null, null, null, null);
@@ -196,21 +196,6 @@ public class TaskDatabase {
         return folderList;
     }
 
-    /*
-    List<String> readFolderID() {
-        List<String> folderList = new ArrayList<>();
-        database = taskHelper.getReadableDatabase();
-        Cursor cursor = database.query(FOLDER_TABLE, null, null, null, null, null, null);
-        if (cursor.moveToFirst()) {
-            int folderNameColumn = cursor.getColumnIndex(FOLDER_NAME);
-            do {
-                folderList.add(cursor.getString(folderNameColumn));
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        database.close();
-        return folderList;
-    } */
 
     /* Helper (内部クラス) */
     private class TaskDatabaseHelper extends SQLiteOpenHelper {

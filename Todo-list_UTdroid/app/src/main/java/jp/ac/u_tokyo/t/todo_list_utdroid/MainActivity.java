@@ -3,39 +3,21 @@ package jp.ac.u_tokyo.t.todo_list_utdroid;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.MenuInflater;
 import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -168,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         showDoneTask.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                taskList = taskDatabase.readdonetask();
+                taskList = taskDatabase.readDoneTask();
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
                 folderNameView.setText("実行済み");
                 mDrawerLayout.closeDrawers();
@@ -233,14 +215,14 @@ public class MainActivity extends AppCompatActivity {
             folderList = taskDatabase.readFolder();
         }
 
-        ListView mListView = (ListView)findViewById(R.id.drawer_view);
-        mListView.setAdapter(new ArrayAdapter<>(getApplicationContext(), R.layout.cell_folder, folderList));
+        ListView mFolderListView = (ListView)findViewById(R.id.drawer_view);
+        mFolderListView.setAdapter(new FolderAdapter(getApplicationContext(), folderList));
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mFolderListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?>parent, View v, int position,long id) {
                 String folderName = (String) parent.getItemAtPosition(position);
-                taskList = taskDatabase.readbyfolder(folderName);
+                taskList = taskDatabase.readByFolder(folderName);
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
 
                 folderNameView.setText("フォルダ: "+folderName);
