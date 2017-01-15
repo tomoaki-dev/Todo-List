@@ -22,7 +22,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -62,7 +61,7 @@ public class SubActivity extends AppCompatActivity {
         final TextView dateView = (TextView)findViewById(date_view);
         final TextView timeView = (TextView)findViewById(time_view);
 
-        Switch s1 = (Switch) findViewById(R.id.switch1);
+        final Switch s1 = (Switch) findViewById(R.id.switch1);
 
         final Button buttonOK = (Button)findViewById(R.id.buttonOK);
         Button buttonCancel = (Button)findViewById(R.id.buttonCancel);
@@ -156,7 +155,6 @@ public class SubActivity extends AppCompatActivity {
 
                 if(task.getDeadlineTime().getTimeInMillis() != 0){
                     s1.setChecked(true);
-                    deadlineTime = 1;
                     calendar = task.getDeadlineTime();
 
                     dateView.setVisibility(View.VISIBLE);
@@ -234,11 +232,9 @@ public class SubActivity extends AppCompatActivity {
 
                         }
                     });
-                    deadlineTime = 1;
                 } else {
                     dateView.setVisibility(View.GONE);
                     timeView.setVisibility(View.GONE);
-                    deadlineTime = 0;
                 }
             }
         });
@@ -291,16 +287,16 @@ public class SubActivity extends AppCompatActivity {
                 } else {
                     intent = new Intent();
 
-                    if (deadlineTime != 0) {
+                    if (s1.isChecked()) {
                         deadlineTime = calendar.getTimeInMillis();
                     }
-                    Log.d("add", "deadline = " + deadlineTime);
+                    Log.d("update", "deadline = " + deadlineTime);
 
                     TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
                     if (taskID == -1) {
                         taskDatabase.add(name, text, deadlineTime, (int) importanceRatio, folderName,0);
                     } else {
-                        taskDatabase.add(taskID, name, text, deadlineTime ,(int) importanceRatio, folderName,0);
+                        taskDatabase.update(taskID, name, text, deadlineTime ,(int) importanceRatio, folderName,0);
                     }
 
                 /* 処理結果を設定 */

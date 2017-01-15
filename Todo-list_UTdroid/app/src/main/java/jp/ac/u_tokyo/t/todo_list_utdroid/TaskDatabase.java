@@ -8,9 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by shimada on 2016/12/28.
@@ -43,14 +41,14 @@ public class TaskDatabase {
     /* デーダベースに追加 */
     void add(String taskName, String taskText, long deadlineTime, int taskImportance, String folderName,long completeTime) {
         database = taskHelper.getWritableDatabase();
-        database.insert(TASK_TABLE, null, getContentValues(taskName, taskText, deadlineTime, taskImportance, folderName, completeTime));
+        database.insert(TASK_TABLE, null, makeContentValues(taskName, taskText, deadlineTime, taskImportance, folderName, completeTime));
         database.close();
     }
 
     /* IDを指定して追加 */
-    void add(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance, String folderName, long completeTime) {
+    void update(int taskID, String taskName, String taskText, long deadlineTime, int taskImportance, String folderName, long completeTime) {
         database = taskHelper.getWritableDatabase();
-        database.update(TASK_TABLE, getContentValues(taskName, taskText, deadlineTime, taskImportance, folderName, completeTime),
+        database.update(TASK_TABLE, makeContentValues(taskName, taskText, deadlineTime, taskImportance, folderName, completeTime),
                 TASK_ID + "=?", new String[]{String.valueOf(taskID)});
         database.close();
     }
@@ -59,7 +57,7 @@ public class TaskDatabase {
     List<Task> read() {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
-        Cursor cursor = database.query(TASK_TABLE, null, COMPLETE_TIME + "=0", null, null, null, null);
+        Cursor cursor = database.query(TASK_TABLE, null, DEADLINE_TIME + "!=0 AND " + COMPLETE_TIME + "=0", null, null, null, DEADLINE_TIME);
         /* 一つ目に移動しつつ存在を確認 */
         if (cursor.moveToFirst()) {
             int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
@@ -81,6 +79,25 @@ public class TaskDatabase {
                 taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, completeTime));
             } while (cursor.moveToNext());
         } // else 0件
+        cursor = database.query(TASK_TABLE, null, DEADLINE_TIME + "=0 AND " + COMPLETE_TIME + "=0", null, null, null, TASK_ID);
+        if (cursor.moveToFirst()) {
+            int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
+            int taskNameColumnNumber = cursor.getColumnIndex(TASK_NAME);
+            int taskTextColumnNumber = cursor.getColumnIndex(TASK_TEXT);
+            int deadlineTimeColumnNumber = cursor.getColumnIndex(DEADLINE_TIME);
+            int taskImportanceColumnNumber = cursor.getColumnIndex(TASK_IMPORTANCE);
+            int folderNameColumnNumber = cursor.getColumnIndex(FOLDER_NAME);
+
+            do {
+                int taskID = cursor.getInt(taskIDColumnNumber);
+                String taskName = cursor.getString(taskNameColumnNumber);
+                String taskText = cursor.getString(taskTextColumnNumber);
+                long deadlineTime = cursor.getLong(deadlineTimeColumnNumber);
+                int taskImportance = cursor.getInt(taskImportanceColumnNumber);
+                String folderName = cursor.getString(folderNameColumnNumber);
+                taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, 0));
+            } while (cursor.moveToNext());
+        }
         cursor.close();
         database.close();
         return taskList;
@@ -90,7 +107,7 @@ public class TaskDatabase {
     List<Task> readByFolder(String folderName) {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
-        Cursor cursor = database.query(TASK_TABLE, null, FOLDER_NAME + "=?", new String[]{folderName}, null, null, null);
+        Cursor cursor = database.query(TASK_TABLE, null, FOLDER_NAME + "=?", new String[]{folderName}, null, null, FOLDER_NAME);
         /* 一つ目に移動しつつ存在を確認 */
         if (cursor.moveToFirst()) {
             int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
@@ -118,6 +135,7 @@ public class TaskDatabase {
     List<Task> readDoneTask() {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
+        // sort?
         Cursor cursor = database.query(TASK_TABLE, null, COMPLETE_TIME + "!=0", null, null, null, null);
         /* 一つ目に移動しつつ存在を確認 */
         if (cursor.moveToFirst()) {
@@ -139,7 +157,7 @@ public class TaskDatabase {
                 long completeTime = cursor.getLong(completeTimeColumnNumber);
                 taskList.add(new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, completeTime));
             } while (cursor.moveToNext());
-        } // else 0件
+        }
         cursor.close();
         database.close();
         return taskList;
@@ -184,7 +202,7 @@ public class TaskDatabase {
     List<String> readFolder() {
         List<String> folderList = new ArrayList<>();
         database = taskHelper.getReadableDatabase();
-        Cursor cursor = database.query(FOLDER_TABLE, null, null, null, null, null, null);
+        Cursor cursor = database.query(FOLDER_TABLE, null, null, null, null, null, FOLDER_NAME);
         if (cursor.moveToFirst()) {
             int folderNameColumn = cursor.getColumnIndex(FOLDER_NAME);
             do {
@@ -226,7 +244,7 @@ public class TaskDatabase {
         }
     }
 
-    private ContentValues getContentValues(String taskName, String taskText, long deadlineTime, int taskImportance, String folderName, long completeTime) {
+    private ContentValues makeContentValues(String taskName, String taskText, long deadlineTime, int taskImportance, String folderName, long completeTime) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TASK_NAME, taskName);
         contentValues.put(TASK_TEXT, taskText);

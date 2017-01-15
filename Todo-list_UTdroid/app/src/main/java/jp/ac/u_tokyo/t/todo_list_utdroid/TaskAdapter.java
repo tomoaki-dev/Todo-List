@@ -1,23 +1,17 @@
 package jp.ac.u_tokyo.t.todo_list_utdroid;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.checkbox;
-import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.never;
 
 /**
  * Created by 智明 on 2016/12/23.
@@ -87,7 +81,7 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
                         Snackbar.make(v, item.getName() + " restored", Snackbar.LENGTH_LONG).show();
                     }
 
-                    taskDatabase.add(
+                    taskDatabase.update(
                             item.getTaskID(),
                             item.getName(),
                             item.getText(),
