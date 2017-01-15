@@ -50,7 +50,9 @@ public class Task {
     public String getName() {
         return taskName;
     }
-    public String getText() { return taskText; }
+    public String getText() {
+        return taskText;
+    }
     public Calendar getDeadlineTime() {
         return deadlineTime;
     }

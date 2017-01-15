@@ -163,11 +163,16 @@ public class TaskDatabase {
         return taskList;
     }
 
-    void delete(Task task) {
+    // 本当はTaskクラスでやるべきな気がする…
+    void setTaskCompleted(Task task, boolean isCompleted) {
         // 一時的な処理
         database = taskHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COMPLETE_TIME, System.currentTimeMillis());
+        long completeTime = 0;
+        if (isCompleted) {
+            completeTime = System.currentTimeMillis();
+        }
+        contentValues.put(COMPLETE_TIME, completeTime);
         database.update(TASK_TABLE, contentValues, TASK_ID + "=?", new String[]{String.valueOf(task.getTaskID())});
         database.close();
     }

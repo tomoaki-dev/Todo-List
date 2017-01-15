@@ -242,14 +242,17 @@ public class SubActivity extends AppCompatActivity {
         //spinnerの初期値の変更（再編集時に元々選択されていたフォルダを表示させる）
         int defaultPosition = 0;
         if (folderName != null) {
-            for (int i = 0; i < folderAdapter.getCount(); i++) {
+            for (int i = 0; i <= folderAdapter.getCount(); i++) {
+                // デバッグ用
+                if (i == folderAdapter.getCount()) {
+                    Toast.makeText(SubActivity.this, "folder error", Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 if (folderName.equals(folderAdapter.getItem(i))) {
                     defaultPosition = i;
                     break;
                 }
             }
-            // デバッグ用
-            Toast.makeText(SubActivity.this, "folder error", Toast.LENGTH_SHORT).show();
         }
         spinner.setSelection(defaultPosition);
 

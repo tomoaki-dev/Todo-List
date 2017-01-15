@@ -72,23 +72,13 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
                     //ArrayAdapter<Task> adapter = (ArrayAdapter<Task>) ((ListView) parent).getAdapter();
                     TaskDatabase taskDatabase = new TaskDatabase(getContext());
 
-                    long completeTime = new GregorianCalendar().getTimeInMillis();
-
                     if(taskCheckBox.isChecked()) {
-                        Snackbar.make(v, item.getName() + " removed", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(v, item.getName() + " removed", Snackbar.LENGTH_SHORT).show();
+                        taskDatabase.setTaskCompleted(item, true);
                     }else {
-                        completeTime = 0;
-                        Snackbar.make(v, item.getName() + " restored", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(v, item.getName() + " restored", Snackbar.LENGTH_SHORT).show();
+                        taskDatabase.setTaskCompleted(item, false);
                     }
-
-                    taskDatabase.update(
-                            item.getTaskID(),
-                            item.getName(),
-                            item.getText(),
-                            item.getDeadlineTime().getTimeInMillis(),
-                            item.getTaskImportance(),
-                            item.getFolderName(),
-                            completeTime);
 
                 }
             });
