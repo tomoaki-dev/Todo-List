@@ -14,6 +14,13 @@ import java.util.List;
  * Created by shimada on 2016/12/28.
  */
 
+/*
+ * 参考
+ * https://developer.android.com/training/basics/data-storage/databases.html?hl=ja
+ * http://asky.hatenablog.com/entry/2016/05/08/013038
+ * http://tomcky.hatenadiary.jp/entry/2013/08/25/102029
+ */
+
 public class TaskDatabase {
     /* 定数 */
     private final static String DATABASE_NAME = "TaskList.db";

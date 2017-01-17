@@ -23,6 +23,12 @@ public class Task {
 /*    public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, int taskImportance) {
         this.set(taskName, taskText, year, month, day, hour, minute, taskImportance);
     }*/
+
+    /*
+     * 参考
+     * http://qiita.com/kurukurupapa@github/items/b52dee4935a6434d006b
+     */
+
     // for Database
     public Task(int taskID, String taskName, String taskText, long deadlineTime,
                 int taskImportance, String folderName, long completeTime) {

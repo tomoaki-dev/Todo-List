@@ -26,6 +26,13 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
     }
 
 
+    /*
+     * 参考
+     * http://hyoromo.hatenablog.com/entry/20090912/1252777077
+     * http://outofmem.hatenablog.com/entry/2014/10/29/040510
+     * http://qiita.com/enkaism/items/33d2475eb84451361e2d
+     */
+
     @Override /*ここは教材のチャットアプリを参考にしている*/
     // TODO: ViewHolder
     public View getView(final int position, View convertView, final ViewGroup parent) {
