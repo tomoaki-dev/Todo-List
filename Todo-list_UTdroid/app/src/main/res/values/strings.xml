@@ -13,5 +13,7 @@
     <string name="close">close</string>
     <string name="add_folder">+ フォルダを追加</string>
     <string name="delete">Delete</string>
-    <string name="selectFolder">フォルダを選択</string> />
+    <string name="selectFolder">フォルダを選択</string>
+    <string name="allTask">全て表示</string>
+    <string name="doneTask">実行済み</string>
 </resources>

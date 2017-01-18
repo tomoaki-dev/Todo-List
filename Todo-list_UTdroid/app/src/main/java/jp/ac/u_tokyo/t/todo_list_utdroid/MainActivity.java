@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     TextView showDoneTask;
     TextView folderNameView;
 
-
+    TaskDatabase taskDatabase = new TaskDatabase(MainActivity.this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         //アダプタ作成
         //参考サイト　http://blogs.gine2.jp/taka/archives/2966
         // 表示するデータを設定
-        final TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
         taskList = taskDatabase.readAllTasks();
         if (taskList.size() == 0) {
             for (int i = 0; i < 5; i++) {
@@ -146,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 taskList = taskDatabase.readAllTasks();
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
-                folderNameView.setText("全て表示");
+                folderNameView.setText(R.string.allTask);
                 mDrawerLayout.closeDrawers();
             }
         });
@@ -158,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 taskList = taskDatabase.readDoneTasks();
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
-                folderNameView.setText("実行済み");
+                folderNameView.setText(R.string.doneTask);
                 mDrawerLayout.closeDrawers();
             }
         });
@@ -207,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
     //-------------------------------------------
 
     private void loadFolderList(){
-        final  TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
         List<String> folderList = taskDatabase.readFolder();
 
         if(folderList.size() == 0){
@@ -225,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 taskList = taskDatabase.readTasksByFolder(folderName);
                 listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
 
-                folderNameView.setText("フォルダ: "+folderName);
+                folderNameView.setText("フォルダ: " + folderName);
                 mDrawerLayout.closeDrawers();
             }
         });
@@ -247,18 +245,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == ADD_TASK && resultCode == RESULT_OK) {
-            listView.setAdapter(new TaskAdapter(this, taskList));
+            listView.setAdapter(new TaskAdapter(this, taskDatabase.readAllTasks()));
+            folderNameView.setText(R.string.allTask);
 
         }else if (requestCode == EDIT_TASK && resultCode == RESULT_OK) {
-            listView.setAdapter(new TaskAdapter(this,taskList));
-            loadFolderList();
+            listView.setAdapter(new TaskAdapter(this, taskDatabase.readAllTasks()));
+            folderNameView.setText(R.string.allTask);
 
         }else if (requestCode == ADD_FOLDER && resultCode == RESULT_OK) {
             loadFolderList();
 
         }else if (requestCode == EDIT_FOLDER && resultCode == RESULT_OK){
             listView.setAdapter(new TaskAdapter(this, new TaskDatabase(this).readAllTasks()));
-            folderNameView.setText("全て表示");
+            folderNameView.setText(R.string.allTask);
             loadFolderList();
         }
     }
