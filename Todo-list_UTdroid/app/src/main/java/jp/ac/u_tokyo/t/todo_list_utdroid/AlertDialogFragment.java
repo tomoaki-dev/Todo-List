@@ -88,8 +88,7 @@ public class AlertDialogFragment extends DialogFragment {
                         // Send the negative button event back to the host activity
                         mListener.onDialogNegativeClick(AlertDialogFragment.this);
                     }
-                })
-                .show();
+                });
         return builder.create();
     }
 
