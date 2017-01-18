@@ -26,45 +26,52 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
     }
 
 
+    /*
+     * 参考
+     * http://hyoromo.hatenablog.com/entry/20090912/1252777077
+     * http://outofmem.hatenablog.com/entry/2014/10/29/040510
+     * http://qiita.com/enkaism/items/33d2475eb84451361e2d
+     */
+
     @Override /*ここは教材のチャットアプリを参考にしている*/
     // TODO: ViewHolder
     public View getView(final int position, View convertView, final ViewGroup parent) {
          /* ビューを受け取る */
         View view = convertView;
+        ViewHolder viewHolder;
         if (view == null) {
             /* 受け取ったビューがnullなら新しくビューを生成（cell_message.xmlを読み込み） */
             // else 使い回し
             view = inflater.inflate(R.layout.cell_task, null);
+            viewHolder = new ViewHolder(view);
+            view.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) view.getTag();
         }
         /* 表示すべきデータの取得 */
         final Task item = (Task) this.getItem(position);
         if (item != null) {
-            /* Viewの取得 */
-            TextView taskName = (TextView) view.findViewById(R.id.taskName);
-            TextView deadlineTime = (TextView) view.findViewById(R.id.deadlineTime);
-            TextView remainDay = (TextView) view.findViewById(R.id.remainDay);
-            final CheckBox taskCheckBox = (CheckBox) view.findViewById(R.id.taskCheckBox);
-
             /* 名前とメッセージを表示 */
-            taskName.setText(item.getName());
+            viewHolder.taskName.setText(item.getName());
             if (item.getDeadlineTime().getTimeInMillis() != 0) {
-                deadlineTime.setText(DateFormat.format("yyyy/MM/dd, E, kk:mm", item.getDeadlineTime()));
-                remainDay.setText("あと" + item.remainDay() + "日");
+                viewHolder.deadlineTime.setText(DateFormat.format("yyyy/MM/dd, E, kk:mm", item.getDeadlineTime()));
+                viewHolder.remainDay.setText("あと" + item.remainDay() + "日");
             } else {
-                deadlineTime.setText("いつか");
+                viewHolder.deadlineTime.setText("いつか");
             }
 
+            final CheckBox checkBox = viewHolder.taskCheckBox;
             if(item.getCompleteTime().getTimeInMillis() == 0){
-                taskCheckBox.setChecked(false);
+                checkBox.setChecked(false);
             }else{
-                taskCheckBox.setChecked(true);
+                checkBox.setChecked(true);
             }
             // 画面外でチェックを外す (一時的)
             //taskCheckBox.setChecked(false);
             //taskCheckBox.setTag(position);
 
             //final ListView list = (ListView) parent;
-            taskCheckBox.setOnClickListener(new View.OnClickListener() {
+            viewHolder.taskCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Snackbar.make(v, item.getName() + " removed", Snackbar.LENGTH_LONG).show();
@@ -72,7 +79,7 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
                     //ArrayAdapter<Task> adapter = (ArrayAdapter<Task>) ((ListView) parent).getAdapter();
                     TaskDatabase taskDatabase = new TaskDatabase(getContext());
 
-                    if(taskCheckBox.isChecked()) {
+                    if(checkBox.isChecked()) {
                         Snackbar.make(v, item.getName() + " removed", Snackbar.LENGTH_SHORT).show();
                         taskDatabase.setTaskCompleted(item, true);
                     }else {
@@ -84,5 +91,19 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
             });
         }
         return view;
+    }
+
+    private static class ViewHolder {
+        TextView taskName;
+        TextView deadlineTime;
+        TextView remainDay;
+        CheckBox taskCheckBox;
+
+        ViewHolder(View view) {
+            this.taskName = (TextView) view.findViewById(R.id.taskName);
+            this.deadlineTime = (TextView) view.findViewById(R.id.deadlineTime);
+            this.remainDay = (TextView) view.findViewById(R.id.remainDay);
+            this.taskCheckBox = (CheckBox) view.findViewById(R.id.taskCheckBox);
+        }
     }
 }

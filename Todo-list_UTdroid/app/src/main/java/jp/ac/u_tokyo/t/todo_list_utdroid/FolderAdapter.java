@@ -38,22 +38,33 @@ public class FolderAdapter extends ArrayAdapter{
     public View getView(final int position, View convertView, final ViewGroup parent) {
          /* ビューを受け取る */
         View view = convertView;
+        ViewHolder viewHolder;
         if (view == null) {
             /* 受け取ったビューがnullなら新しくビューを生成 */
             // else 使い回し
             view = inflater.inflate(R.layout.cell_folder, null);
+            viewHolder = new ViewHolder(view);
+            view.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) view.getTag();
         }
         /* 表示すべきデータの取得 */
         String name = (String) this.getItem(position);
 
-        /* Viewの取得 */
-        TextView folderName = (TextView) view.findViewById(R.id.folder_name);
-        ImageView imageView = (ImageView)view.findViewById(R.id.imageView);
-
         /* 名前とメッセージを表示 */
-        folderName.setText(name);
-        imageView.setImageResource(btn_star_big_on);
+        viewHolder.folderName.setText(name);
+        viewHolder.imageView.setImageResource(btn_star_big_on);
 
         return view;
+    }
+
+    private static class ViewHolder {
+        TextView folderName;
+        ImageView imageView;
+
+        ViewHolder(View view) {
+            this.folderName = (TextView) view.findViewById(R.id.folder_name);
+            this.imageView = (ImageView) view.findViewById(R.id.imageView);
+        }
     }
 }
