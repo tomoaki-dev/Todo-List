@@ -87,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         listView = (ListView) findViewById(R.id.list_view);
+        TextView emptyText = (TextView) findViewById(R.id.empty_text);
+        listView.setEmptyView(emptyText);
 
         //アダプタ作成
         //参考サイト　http://blogs.gine2.jp/taka/archives/2966
