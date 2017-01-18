@@ -17,9 +17,12 @@ import android.support.v7.app.AlertDialog;
 //https://developer.android.com/guide/topics/ui/dialogs.html
 
 public class AlertDialogFragment extends DialogFragment {
+    private static final String REQUEST = "request";
+    private static final int REQUEST_TASK = 1;
+    private static final int REQUEST_FOLDER = 2;
 
-    String mTitle;
-    String mMassage;
+    String titleText;
+    String messageText;
 
     /* The activity that creates an instance of this dialog fragment must
      * implement this interface in order to receive event callbacks.
@@ -27,6 +30,14 @@ public class AlertDialogFragment extends DialogFragment {
     public interface NoticeDialogListener {
         public void onDialogPositiveClick(DialogFragment dialog);
         public void onDialogNegativeClick(DialogFragment dialog);
+    }
+
+    public static AlertDialogFragment newInstance(int requestCode) {
+        AlertDialogFragment alert = new AlertDialogFragment();
+        Bundle arg = new Bundle();
+        arg.putInt(REQUEST, requestCode);
+        alert.setArguments(arg);
+        return alert;
     }
 
     // Use this instance of the interface to deliver action events
@@ -49,11 +60,22 @@ public class AlertDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        int requestCode = getArguments().getInt(REQUEST);
+        switch (requestCode) {
+            case REQUEST_TASK:
+                titleText = "本当に削除しますか？";
+                messageText = "この操作でこの項目は完全に削除されます。";
+                break;
+            case REQUEST_FOLDER:
+                titleText = "本当にこのフォルダを削除しますか？";
+                messageText = "フォルダ内の項目も全て削除されます。";
+                break;
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("本当に削除しますか？")
-                .setMessage("この操作でこの項目は完全に削除されます。")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setTitle(titleText)
+                .setMessage(messageText)
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // OK button pressed
