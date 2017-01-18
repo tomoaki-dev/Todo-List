@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -35,7 +37,7 @@ import static jp.ac.u_tokyo.t.todo_list_utdroid.R.id.time_view;
  * Created by 智明 on 2016/12/25.
  */
 
-public class SubActivity extends AppCompatActivity {
+public class SubActivity extends FragmentActivity implements AlertDialogFragment.NoticeDialogListener {
 
     private EditText editTaskName;
     private EditText editTaskText;
@@ -65,11 +67,17 @@ public class SubActivity extends AppCompatActivity {
 
         final Button buttonOK = (Button)findViewById(R.id.buttonOK);
         Button buttonCancel = (Button)findViewById(R.id.buttonCancel);
+        Button buttonDelete = (Button)findViewById(R.id.buttonDelete);
+
+        View deleteView = (View)findViewById(R.id.deleteView);
 
         calendar = new GregorianCalendar();
 
         dateView.setVisibility(View.GONE);
         timeView.setVisibility(View.GONE);
+
+        buttonDelete.setVisibility(View.GONE);
+        deleteView.setVisibility(View.GONE);
 
 
         //日時設定
@@ -149,6 +157,9 @@ public class SubActivity extends AppCompatActivity {
                 rb.setRating(importanceRatio);
 
                 folderName = task.getFolderName();
+
+                deleteView.setVisibility(View.VISIBLE);
+                buttonDelete.setVisibility(View.VISIBLE);
 
                 //今はトースト焼いてる
                 Toast.makeText(SubActivity.this,"TaskID: " + taskID + "  FolderName:"+ folderName,Toast.LENGTH_SHORT).show();
@@ -320,7 +331,6 @@ public class SubActivity extends AppCompatActivity {
                 intent = new Intent();
                 /* 何も反映しない */
 
-
                 /* 処理結果を設定 */
                 setResult(RESULT_CANCELED, intent);
 
@@ -331,5 +341,52 @@ public class SubActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent();
+
+                //ダイアログを表示させる
+                showAlertDialog();
+            }
+        });
+
+    }
+
+
+    //参考サイト　https://developer.android.com/guide/topics/ui/dialogs.html
+    public void showAlertDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new AlertDialogFragment();
+        dialog.show(getSupportFragmentManager(), "AlertDialogFragment");
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        /* タスクを削除 */
+        TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
+        Task task = taskDatabase.getTaskById(taskID);
+        taskDatabase.delete(task);
+
+        /* 処理結果を設定 */
+        setResult(RESULT_OK, intent);
+
+                /* アニメーションを付与 */
+        overridePendingTransition(R.anim.open_fade_in, R.anim.close_fade_out);
+
+                /* この画面を終了 */
+        finish();
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+        //何もしない
     }
 }

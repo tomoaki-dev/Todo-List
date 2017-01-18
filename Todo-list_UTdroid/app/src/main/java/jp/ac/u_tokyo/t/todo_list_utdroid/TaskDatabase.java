@@ -177,6 +177,38 @@ public class TaskDatabase {
         database.close();
     }
 
+    //タスクの削除
+    void delete(Task task) {
+        // 一時的な処理
+        database = taskHelper.getWritableDatabase();
+        database.delete(TASK_TABLE, TASK_ID + "=?", new String[]{String.valueOf(task.getTaskID())});
+        database.close();
+    }
+
+    //フォルダの削除
+    void deleteFolder(String folderName) {
+        // フォルダの中身を削除
+        database = taskHelper.getWritableDatabase();
+        Cursor cursor = database.query(TASK_TABLE, null, FOLDER_NAME + "=?", new String[]{folderName}, null, null, FOLDER_NAME);
+        /* 一つ目に移動しつつ存在を確認 */
+        if (cursor.moveToFirst()) {
+            int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
+
+            do {
+                Integer taskID =  cursor.getInt(taskIDColumnNumber);
+                String ID = taskID.toString();
+                database.delete(TASK_TABLE, TASK_ID + "=?", new String[]{ID});
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        //フォルダそのものを削除
+        database.delete(FOLDER_TABLE, FOLDER_NAME + "=?", new String[]{folderName});
+        database.close();
+    }
+
+
     /* IDからタスクを検索 */
     Task getTaskById(int taskID) {
         database = taskHelper.getReadableDatabase();

@@ -80,7 +80,7 @@
             android:id="@+id/ratingBar"
             android:numStars="3"
             android:stepSize="1"
-            android:layout_marginRight="10dp"/>
+            android:layout_paddingRight="10dp" />
 
 
     </LinearLayout>
@@ -128,7 +128,7 @@
         android:background="@color/colorPrimaryDark"/>
 
     <TextView
-        android:text="フォルダを選択"
+        android:text="@string/selectFolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView2"
@@ -171,6 +171,21 @@
             style="?android:attr/buttonBarButtonStyle"/>
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/deleteView"
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_height="1px"
+        android:background="@color/colorPrimaryDark"/>
+
+    <Button
+        android:text="@string/delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonDelete"
+        android:layout_weight="0.04"
+        style="?android:attr/buttonBarButtonStyle"/>
 
 
 </LinearLayout>
