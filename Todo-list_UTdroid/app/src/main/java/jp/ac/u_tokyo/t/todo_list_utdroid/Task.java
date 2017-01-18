@@ -19,11 +19,6 @@ public class Task {
     private String folderName;
     private Calendar completeTime;
 
-    /* コンストラクタ(set) */
-/*    public Task(String taskName, String taskText, int year, int month, int day, int hour, int minute, int taskImportance) {
-        this.set(taskName, taskText, year, month, day, hour, minute, taskImportance);
-    }*/
-
     /*
      * 参考
      * http://qiita.com/kurukurupapa@github/items/b52dee4935a6434d006b
@@ -43,12 +38,6 @@ public class Task {
         this.completeTime.setTimeInMillis(completeTime);
     }
 
-/*    private void set(String taskName, String taskText, int year, int month, int day, int hour, int minute, int taskImportance) {
-        this.taskName = taskName;
-        this.taskText = taskText;
-        this.deadlineTime = new GregorianCalendar(year, month-1, day, hour, minute);
-        this.taskImportance = taskImportance;
-    }*/
 
     public int getTaskID() {
         return taskID;

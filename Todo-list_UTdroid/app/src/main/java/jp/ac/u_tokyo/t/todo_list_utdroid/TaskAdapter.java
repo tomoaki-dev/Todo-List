@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -34,7 +33,6 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
      */
 
     @Override /*ここは教材のチャットアプリを参考にしている*/
-    // TODO: ViewHolder
     public View getView(final int position, View convertView, final ViewGroup parent) {
          /* ビューを受け取る */
         View view = convertView;
@@ -66,17 +64,9 @@ public class TaskAdapter extends ArrayAdapter {//ArrayAdapterはチャットア�
             }else{
                 checkBox.setChecked(true);
             }
-            // 画面外でチェックを外す (一時的)
-            //taskCheckBox.setChecked(false);
-            //taskCheckBox.setTag(position);
-
-            //final ListView list = (ListView) parent;
             viewHolder.taskCheckBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Snackbar.make(v, item.getName() + " removed", Snackbar.LENGTH_LONG).show();
-                    // getAdapter() は参照渡し？
-                    //ArrayAdapter<Task> adapter = (ArrayAdapter<Task>) ((ListView) parent).getAdapter();
                     TaskDatabase taskDatabase = new TaskDatabase(getContext());
 
                     if(checkBox.isChecked()) {

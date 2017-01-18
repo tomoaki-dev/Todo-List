@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -106,7 +104,6 @@ public class SubActivity extends FragmentActivity implements AlertDialogFragment
                 calendar.set(Calendar.HOUR_OF_DAY,hour);
                 calendar.set(Calendar.MINUTE,minute);
                 timeView.setText(DateFormat.format("kk:mm", calendar));
-                Log.d("time_set", "calendar = " + calendar.getTimeInMillis());
             }
         };
 
@@ -161,8 +158,6 @@ public class SubActivity extends FragmentActivity implements AlertDialogFragment
                 deleteView.setVisibility(View.VISIBLE);
                 buttonDelete.setVisibility(View.VISIBLE);
 
-                //今はトースト焼いてる
-                Toast.makeText(SubActivity.this,"TaskID: " + taskID + "  FolderName:"+ folderName,Toast.LENGTH_SHORT).show();
 
                 if(task.getDeadlineTime().getTimeInMillis() != 0){
                     s1.setChecked(true);
@@ -274,8 +269,6 @@ public class SubActivity extends FragmentActivity implements AlertDialogFragment
                 Spinner spinner = (Spinner) parent;
                 // 選択されたアイテムを取得します
                 folderName = (String) spinner.getSelectedItem();
-
-                Toast.makeText(SubActivity.this, folderName, Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -304,7 +297,6 @@ public class SubActivity extends FragmentActivity implements AlertDialogFragment
                     if (s1.isChecked()) {
                         deadlineTime = calendar.getTimeInMillis();
                     }
-                    Log.d("update", "deadline = " + deadlineTime);
 
                     TaskDatabase taskDatabase = new TaskDatabase(getApplicationContext());
                     if (taskID == -1) {

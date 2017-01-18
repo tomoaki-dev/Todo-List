@@ -13,25 +13,16 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.GregorianCalendar;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String LIST_ITEM_TEXT1 = "Task";
-    private static final String LIST_ITEM_TEXT2 = "Text";
-
     private final int ADD_TASK = 0;
     private final int EDIT_TASK = 1;
     private final int ADD_FOLDER = 2;
     private final int EDIT_FOLDER = 3;
-
-    /* Intentにオブジェクトを添付する際もKey-Valueストアの考え方に従う */
-    public final static String INTENT_KEY_RESULT = "intentKeyResult";
-    public final static String INTENT_KEY_FILEPATH = "intentKeyFilePath";
 
     ListView listView;
     List<Task> taskList;
@@ -64,9 +55,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
-
         mDrawerToggle.setDrawerIndicatorEnabled(true);
 
         loadFolderList();
@@ -94,33 +82,18 @@ public class MainActivity extends AppCompatActivity {
         //参考サイト　http://blogs.gine2.jp/taka/archives/2966
         // 表示するデータを設定
         taskList = taskDatabase.readAllTasks();
-        if (taskList.size() == 0) {
-            for (int i = 0; i < 5; i++) {
-                int d = i % 12 + 1;
-                long time = new GregorianCalendar(2017, d, d, d, d).getTimeInMillis();
-                taskDatabase.add("Task " + i, "Task", time, 0, taskDatabase.readFolder().get(0),0);
-            }
-            taskList = taskDatabase.readAllTasks();
-        }
         listView.setAdapter(new TaskAdapter(MainActivity.this, taskList));
 
 
-        // /クリックイベント処理
+        // クリックイベント処理
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ListView listview = (ListView) parent;
-                //Log.d("ItemClick", "Position=" + String.valueOf(position));
                 Task task = (Task) parent.getItemAtPosition(position);
                 Intent intent = new Intent(MainActivity.this, SubActivity.class);
                 intent.putExtra("id",task.getTaskID());
                 startActivityForResult(intent,EDIT_TASK);
 
-
-                Toast.makeText(
-                        MainActivity.this,
-                        "longclick Item id:"+ task.getTaskID(), Toast.LENGTH_SHORT)
-                        .show();
                 return false;
             }
 

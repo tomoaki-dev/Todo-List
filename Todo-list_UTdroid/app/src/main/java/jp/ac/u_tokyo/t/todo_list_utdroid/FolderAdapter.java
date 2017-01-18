@@ -2,8 +2,6 @@ package jp.ac.u_tokyo.t.todo_list_utdroid;
 
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static android.R.drawable.btn_star_big_on;
 
@@ -25,16 +20,12 @@ import static android.R.drawable.btn_star_big_on;
 public class FolderAdapter extends ArrayAdapter{
     private LayoutInflater inflater;
 
-//    List<String> folderList;
-//    Map<Integer,String> folderMap = new LinkedHashMap<>();
-
     public FolderAdapter(Context context, List<String> folderList) {
         super(context, 0, folderList);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override /*ここは教材のチャットアプリを参考にしている*/
-    // TODO: ViewHolder
     public View getView(final int position, View convertView, final ViewGroup parent) {
          /* ビューを受け取る */
         View view = convertView;
