@@ -196,19 +196,7 @@ public class TaskDatabase {
     void deleteFolder(String folderName) {
         // フォルダの中身を削除
         database = taskHelper.getWritableDatabase();
-        Cursor cursor = database.query(TASK_TABLE, null, FOLDER_NAME + "=?", new String[]{folderName}, null, null, FOLDER_NAME);
-        /* 一つ目に移動しつつ存在を確認 */
-        if (cursor.moveToFirst()) {
-            int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
-
-            do {
-                Integer taskID =  cursor.getInt(taskIDColumnNumber);
-                String ID = taskID.toString();
-                database.delete(TASK_TABLE, TASK_ID + "=?", new String[]{ID});
-
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
+        database.delete(TASK_TABLE, FOLDER_NAME + " =?", new String[]{folderName});
 
         //フォルダそのものを削除
         database.delete(FOLDER_TABLE, FOLDER_NAME + "=?", new String[]{folderName});
