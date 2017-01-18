@@ -5,7 +5,7 @@
     <string name="ok">OK</string>
     <string name="memo">メモ</string>
     <string name="task">Task</string>
-    <string name="define_deadline">締切の設定</string>
+    <string name="define_deadline">日時の設定</string>
     <string name="importance">重要度</string>
     <string name="tabs">Tabs</string>
     <string name="reset">リセット</string>
@@ -16,4 +16,5 @@
     <string name="selectFolder">フォルダを選択</string>
     <string name="allTask">全て表示</string>
     <string name="doneTask">実行済み</string>
+    <string name="empty">項目がありません</string>
 </resources>
