@@ -358,7 +358,7 @@ public class SubActivity extends FragmentActivity implements AlertDialogFragment
     //参考サイト　https://developer.android.com/guide/topics/ui/dialogs.html
     public void showAlertDialog() {
         // Create an instance of the dialog fragment and show it
-        DialogFragment dialog = new AlertDialogFragment();
+        DialogFragment dialog = AlertDialogFragment.newInstance(1);
         dialog.show(getSupportFragmentManager(), "AlertDialogFragment");
     }
 
