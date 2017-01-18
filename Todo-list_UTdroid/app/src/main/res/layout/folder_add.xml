@@ -34,7 +34,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <Button
             android:text="Cancel"
@@ -50,4 +50,19 @@
             android:id="@+id/fbuttonOK"
             android:layout_weight="1" />
     </LinearLayout>
+
+    <View
+        android:id="@+id/fdeleteView"
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_height="1px"
+        android:background="@color/colorPrimaryDark"/>
+
+    <Button
+        android:text="Delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/fbuttonDetete"
+        />
+
 </LinearLayout>

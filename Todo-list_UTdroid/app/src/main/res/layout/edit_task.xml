@@ -80,7 +80,7 @@
             android:id="@+id/ratingBar"
             android:numStars="3"
             android:stepSize="1"
-            android:layout_paddingRight="10dp" />
+            android:layout_marginRight="10dp" />
 
 
     </LinearLayout>

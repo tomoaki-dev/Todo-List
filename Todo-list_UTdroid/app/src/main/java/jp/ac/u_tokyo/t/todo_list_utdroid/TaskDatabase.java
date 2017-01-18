@@ -61,7 +61,7 @@ public class TaskDatabase {
     }
 
     /* 配列に読み込み */
-    List<Task> read() {
+    List<Task> readAllTasks() {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
         Cursor cursor = database.query(TASK_TABLE, null, DEADLINE_TIME + "!=0 AND " + COMPLETE_TIME + "=0", null, null, null, DEADLINE_TIME);
@@ -111,10 +111,10 @@ public class TaskDatabase {
     }
 
     /*フォルダごとに配列に読み込み*/
-    List<Task> readByFolder(String folderName) {
+    List<Task> readTasksByFolder(String folderName) {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
-        Cursor cursor = database.query(TASK_TABLE, null, FOLDER_NAME + "=?", new String[]{folderName}, null, null, FOLDER_NAME);
+        Cursor cursor = database.query(TASK_TABLE, null, FOLDER_NAME + "=? AND " + COMPLETE_TIME + "=0", new String[]{folderName}, null, null, FOLDER_NAME);
         /* 一つ目に移動しつつ存在を確認 */
         if (cursor.moveToFirst()) {
             int taskIDColumnNumber = cursor.getColumnIndex(TASK_ID);
@@ -139,7 +139,7 @@ public class TaskDatabase {
         return taskList;
     }
 
-    List<Task> readDoneTask() {
+    List<Task> readDoneTasks() {
         database = taskHelper.getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
         // sort?
@@ -234,12 +234,22 @@ public class TaskDatabase {
         return new Task(taskID, taskName, taskText, deadlineTime, taskImportance, folderName, completeTime);
     }
 
-    /* folder */
+    /* フォルダ作成 */
     void createNewFolder(String folderName) {
         database = taskHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(FOLDER_NAME, folderName);
         database.insert(FOLDER_TABLE, null, contentValues);
+    }
+
+    //フォルダ編集
+    void updateFolder(String oldFolderName, String newFolderName){
+        database = taskHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(FOLDER_NAME, newFolderName);
+        database.update(FOLDER_TABLE, contentValues, FOLDER_NAME + "=?", new String[]{oldFolderName});
+        database.update(TASK_TABLE, contentValues, FOLDER_NAME + "=?", new String[]{oldFolderName});
+
     }
 
     // 要検討
