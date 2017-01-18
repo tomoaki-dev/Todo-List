@@ -25,7 +25,7 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".FolderAddActivity"
+            android:name=".FolderActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
         </activity>

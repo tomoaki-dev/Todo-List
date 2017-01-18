@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         addFolder.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, FolderAddActivity.class);
+                Intent intent = new Intent(MainActivity.this, FolderActivity.class);
                 startActivityForResult(intent, ADD_FOLDER);
             }
         });
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         mFolderListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?>parent, View v, int position,long id) {
-                Intent intent = new Intent(MainActivity.this, FolderAddActivity.class);
+                Intent intent = new Intent(MainActivity.this, FolderActivity.class);
                 intent.putExtra("folderName",(String) parent.getItemAtPosition(position));
 
                 startActivityForResult(intent, EDIT_FOLDER);
